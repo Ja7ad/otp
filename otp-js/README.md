@@ -1,6 +1,6 @@
 # 🔐 otp-js
 
-> WebAssembly-powered One-Time Password (OTP) library with blazing-fast HOTP & TOTP generation and validation using Go — fully accessible from JavaScript.
+> WebAssembly-powered One-Time Password (OTP) library with blazing-fast HOTP & TOTP generation and validation using Go — fully accessible from [javascript](https://www.npmjs.com/package/@ja7ad/otp-js).
 
 ## ✨ Features
 
@@ -17,7 +17,7 @@
 ## 📦 Installation
 
 ```bash
-npm install otp-js
+npm i @ja7ad/otp-js
 ```
 
 ---
