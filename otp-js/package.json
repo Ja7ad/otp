@@ -29,6 +29,10 @@
   ],
   "author": "Javad Rajabzadeh",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Ja7ad/otp.git"
+  },
   "type": "commonjs",
   "engines": {
     "node": ">=16.0.0"
