@@ -24,12 +24,12 @@ func GenerateTOTP(secret string, t time.Time, param *Param) (string, error) {
 		param = &_def
 	}
 
-	secretBuf, err := decodeSecret(secret)
+	secretBuf, err := DecodeSecret(secret)
 	if err != nil {
 		return "", err
 	}
 
-	return deriveOTP(secretBuf, timeCounterFunc(t, param.Period), param.Digits.Int(), param.Algorithm)
+	return deriveOTP(secretBuf, TimeCounterFunc(t, param.Period), param.Digits.Int(), param.Algorithm)
 }
 
 // GenerateTOTPURL constructs an otpauth:// URL for configuring TOTP-based authenticators (e.g., Google Authenticator).
@@ -38,40 +38,12 @@ func GenerateTOTP(secret string, t time.Time, param *Param) (string, error) {
 // Example output:
 // otpauth://totp/Example:alice@domain.com?secret=BASE32ENCODEDSECRET&issuer=Example&algorithm=SHA1&digits=6&period=30
 func GenerateTOTPURL(param URLParam) (*url.URL, error) {
-	if param.Issuer == "" {
-		return nil, ErrIssuerRequired
-	}
-	if param.AccountName == "" {
-		return nil, ErrAccountNameRequired
-	}
-	if param.Digits == 0 {
-		param.Digits = Digits(6)
-	}
 	if param.Period == 0 {
 		param.Period = 30
 	}
-	if param.Algorithm == 0 {
-		param.Algorithm = SHA1
-	}
-	if param.Secret == "" {
-		return nil, ErrSecretRequired
-	}
-
-	label := url.PathEscape(fmt.Sprintf("%s:%s", param.Issuer, param.AccountName))
-
-	query := url.Values{}
-	query.Set("secret", param.Secret)
-	query.Set("issuer", param.Issuer)
-	query.Set("algorithm", param.Algorithm.String())
-	query.Set("digits", fmt.Sprintf("%d", param.Digits))
-	query.Set("period", fmt.Sprintf("%d", param.Period))
-
-	return &url.URL{
-		Scheme:   "otpauth",
-		Host:     "totp",
-		Path:     "/" + label,
-		RawQuery: query.Encode(),
-	}, nil
+	return generateOTPURL("totp", param, map[string]string{
+		"period": fmt.Sprintf("%d", param.Period),
+	})
 }
 
 // ValidateTOTP checks whether the given TOTP code is valid for the specified time and secret.
@@ -83,7 +55,7 @@ func ValidateTOTP(secret, code string, t time.Time, param *Param) (bool, error) 
 		param = &_def
 	}
 
-	secretBuf, err := decodeSecret(secret)
+	secretBuf, err := DecodeSecret(secret)
 	if err != nil {
 		return false, err
 	}
@@ -94,10 +66,10 @@ func ValidateTOTP(secret, code string, t time.Time, param *Param) (bool, error) 
 	}
 
 	skew := param.Skew
-	counter := timeCounterFunc(t, period)
+	counter := TimeCounterFunc(t, period)
 
 	for i := -int64(skew); i <= int64(skew); i++ {
-		valid, err := validateOTP(code, secretBuf, counter+uint64(i), param.Digits.Int(), param.Algorithm)
+		valid, err := validateOTP(code, secretBuf, counter+uint64(i), param.Digits, param.Algorithm)
 		if err == nil && valid {
 			return true, nil
 		}
