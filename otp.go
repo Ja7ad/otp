@@ -39,6 +39,21 @@ func (d Digits) Int() int {
 	return int(d)
 }
 
+func DigitsFromStr(digits string) Digits {
+	switch digits {
+	case "6":
+		return SixDigits
+	case "8":
+		return EightDigits
+	case "9":
+		return NineDigits
+	case "10":
+		return TenDigits
+	default:
+		return SixDigits
+	}
+}
+
 var algoStrMap = map[Algorithm]string{
 	SHA1:   "SHA1",
 	SHA256: "SHA256",
@@ -47,6 +62,19 @@ var algoStrMap = map[Algorithm]string{
 
 func (algo Algorithm) String() string {
 	return algoStrMap[algo]
+}
+
+func AlgorithmFromStr(algo string) Algorithm {
+	switch algo {
+	case "SHA1":
+		return SHA1
+	case "SHA256":
+		return SHA256
+	case "SHA512":
+		return SHA512
+	default:
+		return SHA1
+	}
 }
 
 // Param defines configuration parameters for generating and validating OTPs.
@@ -68,9 +96,9 @@ type Param struct {
 	Algorithm Algorithm
 }
 
-// timeCounterFunc returns the TOTP counter value based on the Unix time and period.
+// TimeCounterFunc returns the TOTP counter value based on the Unix time and period.
 // It performs integer division of time by the period to produce a moving counter window.
-var timeCounterFunc = func(t time.Time, period uint) uint64 {
+var TimeCounterFunc = func(t time.Time, period uint) uint64 {
 	return uint64(t.Unix()) / uint64(period)
 }
 
@@ -176,4 +204,42 @@ func ParseOTPAuthURL(u *url.URL) (*URLParam, error) {
 	}
 
 	return param, nil
+}
+
+func generateOTPURL(kind string, param URLParam, extraParams map[string]string) (*url.URL, error) {
+	if param.Issuer == "" {
+		return nil, ErrIssuerRequired
+	}
+	if param.AccountName == "" {
+		return nil, ErrAccountNameRequired
+	}
+	if param.Digits == 0 {
+		param.Digits = Digits(6)
+	}
+	if param.Algorithm == 0 {
+		param.Algorithm = SHA1
+	}
+	if param.Secret == "" {
+		return nil, ErrSecretRequired
+	}
+
+	label := url.PathEscape(fmt.Sprintf("%s:%s", param.Issuer, param.AccountName))
+
+	query := url.Values{}
+	query.Set("secret", param.Secret)
+	query.Set("issuer", param.Issuer)
+	query.Set("algorithm", param.Algorithm.String())
+	query.Set("digits", fmt.Sprintf("%d", param.Digits))
+
+	// Add type-specific values
+	for k, v := range extraParams {
+		query.Set(k, v)
+	}
+
+	return &url.URL{
+		Scheme:   "otpauth",
+		Host:     kind, // "totp" or "hotp"
+		Path:     "/" + label,
+		RawQuery: query.Encode(),
+	}, nil
 }
