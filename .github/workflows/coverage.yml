@@ -1,0 +1,31 @@
+name: Reporting test coverage
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "stable"
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Test with coverage
+        run: go test -gcflags=-l -coverprofile=coverage.txt -covermode=atomic ./...
+
+      - name: Upload coverage report
+        uses: codecov/codecov-action@v5
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
