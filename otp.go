@@ -79,8 +79,6 @@ type URLParam struct {
 	AccountName string
 	// Number of seconds a TOTP hash is valid for. Defaults to 30 seconds.
 	Period uint
-	// Size in size of the generated Secret. Defaults to 20 bytes.
-	SecretSize uint
 	// Secret to store. Defaults to a randomly generated secret of SecretSize.  You should generally leave this empty.
 	Secret string
 	// Digits to request. Defaults to 6.
