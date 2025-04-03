@@ -1,7 +1,6 @@
 package otp
 
 import (
-	"fmt"
 	"net/url"
 )
 
@@ -22,7 +21,7 @@ func GenerateHOTP(secret string, counter uint64, param *Param) (string, error) {
 		param = &def
 	}
 
-	secretBuf, err := decodeSecret(secret)
+	secretBuf, err := DecodeSecret(secret)
 	if err != nil {
 		return "", err
 	}
@@ -36,37 +35,9 @@ func GenerateHOTP(secret string, counter uint64, param *Param) (string, error) {
 // Example output:
 // otpauth://hotp/Example:alice@domain.com?secret=BASE32ENCODEDSECRET&issuer=Example&algorithm=SHA1&digits=6&counter=0
 func GenerateHOTPURL(param URLParam) (*url.URL, error) {
-	if param.Issuer == "" {
-		return nil, ErrIssuerRequired
-	}
-	if param.AccountName == "" {
-		return nil, ErrAccountNameRequired
-	}
-	if param.Digits == 0 {
-		param.Digits = Digits(6)
-	}
-	if param.Algorithm == 0 {
-		param.Algorithm = SHA1
-	}
-	if param.Secret == "" {
-		return nil, ErrSecretRequired
-	}
-
-	label := url.PathEscape(fmt.Sprintf("%s:%s", param.Issuer, param.AccountName))
-
-	query := url.Values{}
-	query.Set("secret", param.Secret)
-	query.Set("issuer", param.Issuer)
-	query.Set("algorithm", param.Algorithm.String())
-	query.Set("digits", fmt.Sprintf("%d", param.Digits))
-	query.Set("counter", "0") // Initial counter assumed to be 0
-
-	return &url.URL{
-		Scheme:   "otpauth",
-		Host:     "hotp",
-		Path:     "/" + label,
-		RawQuery: query.Encode(),
-	}, nil
+	return generateOTPURL("hotp", param, map[string]string{
+		"counter": "0",
+	})
 }
 
 // ValidateHOTP checks whether the given HOTP code is valid for the provided secret and counter.
@@ -83,7 +54,7 @@ func ValidateHOTP(secret, code string, counter uint64, param *Param) (bool, erro
 	}
 	skew := int64(param.Skew)
 
-	secretBuf, err := decodeSecret(secret)
+	secretBuf, err := DecodeSecret(secret)
 	if err != nil {
 		return false, err
 	}
@@ -99,7 +70,7 @@ func ValidateHOTP(secret, code string, counter uint64, param *Param) (bool, erro
 			c = counter + uint64(i)
 		}
 
-		valid, err := validateOTP(code, secretBuf, c, param.Digits.Int(), param.Algorithm)
+		valid, err := validateOTP(code, secretBuf, c, param.Digits, param.Algorithm)
 		if err == nil && valid {
 			return true, nil
 		}
