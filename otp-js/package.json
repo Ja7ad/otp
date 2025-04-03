@@ -1,0 +1,39 @@
+{
+  "name": "otp-js",
+  "version": "1.0.0",
+  "description": "Fast and zero-dependency WebAssembly HOTP/TOTP implementation in Go",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": [
+    "src/index.js",
+    "src/wasm_exec.js",
+    "lib/otp.wasm"
+  ],
+  "scripts": {
+    "test": "jest"
+  },
+  "jest": {
+    "testEnvironment": "node"
+  },
+  "keywords": [
+    "otp",
+    "hotp",
+    "totp",
+    "wasm",
+    "webassembly",
+    "go",
+    "2fa",
+    "authenticator"
+  ],
+  "author": "Javad Rajabzadeh",
+  "license": "MIT",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}
