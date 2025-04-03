@@ -83,5 +83,19 @@ func ValidateHOTP(secret, code string, counter uint64, param *Param) (bool, erro
 		return false, err
 	}
 
-	return validateOTP(code, secretBuf, counter, param.Digits.Int(), param.Algorithm)
+	period := param.Period
+	if period == 0 {
+		period = 30
+	}
+
+	skew := param.Skew
+
+	for i := -int64(skew); i <= int64(skew); i++ {
+		valid, err := validateOTP(code, secretBuf, counter+uint64(i), param.Digits.Int(), param.Algorithm)
+		if err == nil && valid {
+			return true, nil
+		}
+	}
+
+	return false, ErrInvalidCode
 }

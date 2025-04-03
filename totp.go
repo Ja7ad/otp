@@ -88,5 +88,20 @@ func ValidateTOTP(secret, code string, t time.Time, param *Param) (bool, error) 
 		return false, err
 	}
 
-	return validateOTP(code, secretBuf, timeCounterFunc(t, param.Period), param.Digits.Int(), param.Algorithm)
+	period := param.Period
+	if period == 0 {
+		period = 30
+	}
+
+	skew := param.Skew
+	counter := timeCounterFunc(t, period)
+
+	for i := -int64(skew); i <= int64(skew); i++ {
+		valid, err := validateOTP(code, secretBuf, counter+uint64(i), param.Digits.Int(), param.Algorithm)
+		if err == nil && valid {
+			return true, nil
+		}
+	}
+
+	return false, ErrInvalidCode
 }
