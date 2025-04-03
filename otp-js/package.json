@@ -1,5 +1,5 @@
 {
-  "name": "otp-js",
+  "name": "@ja7ad/otp-js",
   "version": "1.0.0",
   "description": "Fast and zero-dependency WebAssembly HOTP/TOTP implementation in Go",
   "main": "src/index.js",
