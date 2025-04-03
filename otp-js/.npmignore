@@ -1,0 +1,5 @@
+__tests__/
+src/*.test.js
+*.tgz
+docs/
+node_modules/
