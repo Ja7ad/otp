@@ -3,6 +3,7 @@ A high-performance, zero-dependency Go package for generating and validating TOT
 - [Feature](#-features)
 - [Installation](#installation-go-124-)
 - [Proof](#-otp-algorithm-proof-rfc-4226--6238)
+- [Example](#example)
 - [Reference](#-references)
 
 ## ✨ Features
