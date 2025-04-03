@@ -1,4 +1,8 @@
+[![codecov](https://codecov.io/gh/Ja7ad/otp/branch/main/graph/badge.svg?token=8N6N60D5UI)](https://codecov.io/gh/Ja7ad/otp)
+[![Go Report Card](https://goreportcard.com/badge/github.com/Ja7ad/otp)](https://goreportcard.com/report/github.com/Ja7ad/otp)
+
 A high-performance, zero-dependency Go package for generating and validating TOTP and HOTP one-time passwords — RFC [4226](https://datatracker.ietf.org/doc/html/rfc4226) and RFC [6238](https://datatracker.ietf.org/doc/html/rfc6238) compliant.
+
 
 - [Feature](#-features)
 - [Installation](#installation-go-124-)
