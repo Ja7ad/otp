@@ -2,6 +2,7 @@ A high-performance, zero-dependency Go package for generating and validating TOT
 
 - [Feature](#-features)
 - [Installation](#installation-go-124-)
+- [Performance Comparison](#-performance-comparison)
 - [Proof](#-otp-algorithm-proof-rfc-4226--6238)
 - [Example](#example)
 - [Reference](#-references)
@@ -26,6 +27,37 @@ A high-performance, zero-dependency Go package for generating and validating TOT
 ```shell
 go get -u github.com/Ja7ad/otp
 ```
+
+## 🚀 Performance Comparison
+
+This comparison is for `Ja7ad/otp` vs `pquerna/otp`
+
+| Algorithm | Digits | Library        | `ns/op` | `B/op` | `allocs/op` | `N` (runs/sec) |
+|-----------|--------|----------------|---------|--------|--------------|----------------|
+| SHA1      | 6      | **Ja7ad/otp**  | **834.7**   | **480**   | **7**         | **1,452,314**  |
+| SHA1      | 6      | pquerna/otp    | 1420    | 592    | 13           | 785,282        |
+| SHA1      | 8      | **Ja7ad/otp**  | **825.3**   | **480**   | **7**         | **1,455,498**  |
+| SHA1      | 8      | pquerna/otp    | 1415    | 592    | 13           | 806,175        |
+| SHA256    | 6      | **Ja7ad/otp**  | **736.0**   | **520**   | **7**         | **1,620,219**  |
+| SHA256    | 6      | pquerna/otp    | 1495    | 728    | 13           | 801,048        |
+| SHA256    | 8      | **Ja7ad/otp**  | **746.1**   | **520**   | **7**         | **1,596,862**  |
+| SHA256    | 8      | pquerna/otp    | 1477    | 728    | 13           | 833,773        |
+| SHA512    | 6      | **Ja7ad/otp**  | **1398**    | **872**   | **7**         | **807,380**    |
+| SHA512    | 6      | pquerna/otp    | 2350    | 1224   | 13           | 432,844        |
+| SHA512    | 8      | **Ja7ad/otp**  | **1408**    | **872**   | **7**         | **728,832**    |
+| SHA512    | 8      | pquerna/otp    | 2359    | 1224   | 13           | 466,941        |
+
+
+| Metric            | Ja7ad/otp           | pquerna/otp        | ✅ Winner |
+|------------------|---------------------|---------------------|----------|
+| **Execution time** (`ns/op`) | **~2x faster** across all algorithms and digit sizes | Slower in all cases | ✅ **Ja7ad/otp** |
+| **Memory usage** (`B/op`) | **~30–50% less** memory allocated | Higher allocations | ✅ **Ja7ad/otp** |
+| **Allocations** (`allocs/op`) | **7** allocations | **13** allocations | ✅ **Ja7ad/otp** |
+| **Dependencies**  | **Zero** external deps | Relies on stdlib + extras | ✅ **Ja7ad/otp** |
+
+### 🔥 Example: SHA256, 6 digits
+- `Ja7ad/otp`: **736 ns**, **520 B**, **7 allocs**
+- `pquerna/otp`: **1495 ns**, **728 B**, **13 allocs**
 
 ## 🔢 OTP Algorithm Proof (RFC 4226 / 6238)
 

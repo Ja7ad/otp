@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/Ja7ad/otp"
 	"log"
+
+	"github.com/Ja7ad/otp"
 )
 
 func main() {
