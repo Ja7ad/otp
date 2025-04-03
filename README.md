@@ -63,29 +63,32 @@ This comparison is for `Ja7ad/otp` vs `pquerna/otp`
 
 The OTP is derived using the following steps:
 
-1. Calculate the HMAC of the secret key and the counter:
+1. **Calculate the HMAC of the secret key and the counter:**
 
 $$
 \text{HMAC} = \text{HMAC-SHA1}(\text{secret}, \text{counter})
 $$
 
-2. Apply **dynamic truncation**:
+2. **Apply dynamic truncation:**
 
 Let:
-- $ \text{offset} = \text{HMAC}[19] \& 0x0F $
-- Then extract 4 bytes starting from offset:
 
 $$
-\text{binary\_code} = (\text{HMAC}[o] \& 0x7F) \ll 24 \,|\, (\text{HMAC}[o+1] \& 0xFF) \ll 16 \,|\, (\text{HMAC}[o+2] \& 0xFF) \ll 8 \,|\, (\text{HMAC}[o+3] \& 0xFF)
+\text{offset} = \text{HMAC}[19] \land 0x0F
 $$
 
-3. Modulo the result to get the final OTP code:
+Then extract 4 bytes starting from `offset`:
 
 $$
-\text{OTP} = \text{binary\_code} \mod 10^{\text{digits}}
+\text{binaryCode} = (\text{HMAC}[o] \land 0x7F) \ll 24 \,\vert\, (\text{HMAC}[o+1] \land 0xFF) \ll 16 \,\vert\, (\text{HMAC}[o+2] \land 0xFF) \ll 8 \,\vert\, (\text{HMAC}[o+3] \land 0xFF)
 $$
 
----
+3. **Modulo the result to get the final OTP code:**
+
+$$
+\text{OTP} = \text{binaryCode} \bmod 10^{\text{digits}}
+$$
+
 
 ## Example
 
