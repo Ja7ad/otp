@@ -11,7 +11,7 @@ var DefaultHOTPParam = &Param{
 	Digits:    SixDigits,
 	Algorithm: SHA1,
 	Period:    0,
-	Skew:      0,
+	Skew:      2,
 }
 
 // GenerateHOTP generates an HOTP code from a given secret and counter.
@@ -78,20 +78,28 @@ func ValidateHOTP(secret, code string, counter uint64, param *Param) (bool, erro
 		param = &def
 	}
 
+	if param.Skew > 10 {
+		return false, ErrInvalidSkew
+	}
+	skew := int64(param.Skew)
+
 	secretBuf, err := decodeSecret(secret)
 	if err != nil {
 		return false, err
 	}
 
-	period := param.Period
-	if period == 0 {
-		period = 30
-	}
+	for i := -skew; i <= skew; i++ {
+		var c uint64
+		if i < 0 {
+			if int64(counter) < -i {
+				continue // prevent underflow
+			}
+			c = counter - uint64(-i)
+		} else {
+			c = counter + uint64(i)
+		}
 
-	skew := param.Skew
-
-	for i := -int64(skew); i <= int64(skew); i++ {
-		valid, err := validateOTP(code, secretBuf, counter+uint64(i), param.Digits.Int(), param.Algorithm)
+		valid, err := validateOTP(code, secretBuf, c, param.Digits.Int(), param.Algorithm)
 		if err == nil && valid {
 			return true, nil
 		}

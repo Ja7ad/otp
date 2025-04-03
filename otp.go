@@ -60,6 +60,8 @@ type Param struct {
 
 	// Skew is the allowed number of time steps (forward/backward) during TOTP validation
 	// to account for clock drift between client and server.
+	// security: A larger Skew increases the chance of a brute-force hit, max 10.
+	// default for hotp is 2
 	Skew uint
 
 	// Algorithm specifies which HMAC hashing algorithm to use (SHA1, SHA256, SHA512).
