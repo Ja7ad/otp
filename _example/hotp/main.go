@@ -13,6 +13,8 @@ func main() {
 		log.Fatal(err)
 	}
 
+	fmt.Printf("secret: %s\n", secret)
+
 	counter := uint64(1)
 
 	code, err := otp.GenerateHOTP(secret, counter, otp.DefaultHOTPParam)

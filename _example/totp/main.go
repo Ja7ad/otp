@@ -14,16 +14,26 @@ func main() {
 		log.Fatal(err)
 	}
 
+	fmt.Printf("secret: %s\n", secret)
+
 	t := time.Now()
 
-	code, err := otp.GenerateTOTP(secret, t, otp.DefaultTOTPParam)
+	code, err := otp.GenerateTOTP(secret, t, &otp.Param{
+		Digits:    otp.EightDigits,
+		Algorithm: otp.SHA512,
+		Period:    60,
+	})
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	fmt.Println(code)
 
-	ok, err := otp.ValidateTOTP(secret, code, t, otp.DefaultTOTPParam)
+	ok, err := otp.ValidateTOTP(secret, code, t, &otp.Param{
+		Digits:    otp.EightDigits,
+		Algorithm: otp.SHA512,
+		Period:    60,
+	})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -33,12 +43,12 @@ func main() {
 	}
 
 	url, err := otp.GenerateTOTPURL(otp.URLParam{
-		Issuer:      "https://example.com",
+		Issuer:      "App",
 		Secret:      secret,
 		AccountName: "foobar",
-		Period:      otp.DefaultTOTPParam.Period,
-		Digits:      otp.DefaultTOTPParam.Digits,
-		Algorithm:   otp.DefaultTOTPParam.Algorithm,
+		Period:      60,
+		Digits:      otp.EightDigits,
+		Algorithm:   otp.SHA512,
 	})
 	if err != nil {
 		log.Fatal(err)
