@@ -33,6 +33,8 @@ A high-performance, zero-dependency Go package for generating and validating TOT
 go get -u github.com/Ja7ad/otp
 ```
 
+> Binding nodejs is available [here](./otp-js).
+
 ## 🚀 Performance Comparison
 
 This comparison is for `Ja7ad/otp` vs `pquerna/otp`
