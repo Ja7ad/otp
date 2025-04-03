@@ -1,3 +1,4 @@
+![otp](.github/otp.svg)
 [![codecov](https://codecov.io/gh/Ja7ad/otp/branch/main/graph/badge.svg?token=8N6N60D5UI)](https://codecov.io/gh/Ja7ad/otp)
 [![Go Report Card](https://goreportcard.com/badge/github.com/Ja7ad/otp)](https://goreportcard.com/report/github.com/Ja7ad/otp)
 [![Go Reference](https://pkg.go.dev/badge/github.com/Ja7ad/otp.svg)](https://pkg.go.dev/github.com/Ja7ad/otp)
