@@ -28,3 +28,8 @@ go.work.sum
 .idea
 .code
 .vscode
+
+# js
+node_modules
+package-lock.json
+*.tgz
