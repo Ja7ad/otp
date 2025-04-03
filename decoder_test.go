@@ -28,7 +28,7 @@ func TestDecodeSecret(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := decodeSecret(tt.secret)
+			got, err := DecodeSecret(tt.secret)
 			if tt.wantErr {
 				if err == nil {
 					t.Fatalf("expected error but got nil")
