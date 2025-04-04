@@ -11,7 +11,7 @@ A high-performance, zero-dependency Go package for generating and validating TOT
 - [Feature](#-features)
 - [Installation](#installation-go-124-)
 - [Performance Comparison](#-performance-comparison)
-- [Proof](#-otp-algorithm-proof-rfc-4226--6238)
+- [Proof algorthim](#-algorithm-rfc)
 - [Example](#example)
 - [Contributing](#-contributing)
 - [Reference](#-references)
@@ -70,36 +70,9 @@ This comparison is for `Ja7ad/otp` vs `pquerna/otp`
 - `Ja7ad/otp`: **736 ns**, **520 B**, **7 allocs**
 - `pquerna/otp`: **1495 ns**, **728 B**, **13 allocs**
 
-## 🔢 OTP Algorithm Proof (RFC 4226 / 6238)
+## 📑 Algorithm (RFC)
 
-The OTP is derived using the following steps:
-
-1. **Calculate the HMAC of the secret key and the counter:**
-
-$$
-\text{HMAC} = \text{HMAC-SHA1}(\text{secret}, \text{counter})
-$$
-
-2. **Apply dynamic truncation:**
-
-Let:
-
-$$
-\text{offset} = \text{HMAC}[19] \land 0x0F
-$$
-
-Then extract 4 bytes starting from `offset`:
-
-$$
-\text{binaryCode} = (\text{HMAC}[o] \land 0x7F) \ll 24 \,\vert\, (\text{HMAC}[o+1] \land 0xFF) \ll 16 \,\vert\, (\text{HMAC}[o+2] \land 0xFF) \ll 8 \,\vert\, (\text{HMAC}[o+3] \land 0xFF)
-$$
-
-3. **Modulo the result to get the final OTP code:**
-
-$$
-\text{OTP} = \text{binaryCode} \bmod 10^{\text{digits}}
-$$
-
+- [RFC 4226 / 6238](docs/rfc4226.md) algorithm
 
 ## 📚 Usage
 
