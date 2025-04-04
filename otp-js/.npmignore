@@ -3,3 +3,4 @@ src/*.test.js
 *.tgz
 docs/
 node_modules/
+src/*.bench.js

@@ -20,6 +20,19 @@
 npm i @ja7ad/otp-js
 ```
 
+## 📊 Benchmark Results
+
+Tests were run using [Benchmark.js](https://benchmarkjs.com/) in Node.js with WebAssembly support enabled.
+
+| Algorithm | Ops/sec       | Margin of Error | Runs Sampled |
+|-----------|---------------|-----------------|---------------|
+| SHA1      | 2,512 ops/sec | ±3.84%          | 67            |
+| SHA256    | 2,480 ops/sec | ±5.00%          | 74            |
+| SHA512    | 2,550 ops/sec | ±2.04%          | 75            |
+
+> 🔍 **Memory Used:** ~1.4 MB  
+> 🚀 **Fastest:** `SHA512` (closely followed by others)
+
 ---
 
 ## 🚀 Usage
@@ -111,8 +124,8 @@ console.log(url); // otpauth://totp/GitHub:user@example.com?...
 npm test
 ```
 
-## 🛠️ Build the WASM (Go 1.21+)
+## Running Benchmark
 
 ```bash
-GOOS=js GOARCH=wasm go build -o lib/otp.wasm ./go/main.go
+npm run benchmark
 ```

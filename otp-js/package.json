@@ -1,6 +1,6 @@
 {
   "name": "@ja7ad/otp-js",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "Fast and zero-dependency WebAssembly HOTP/TOTP implementation in Go",
   "main": "src/index.js",
   "exports": {
@@ -12,7 +12,8 @@
     "lib/otp.wasm"
   ],
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "benchmark": "node --expose-gc src/otp.bench.js"
   },
   "jest": {
     "testEnvironment": "node"
@@ -39,5 +40,8 @@
   },
   "devDependencies": {
     "jest": "^29.7.0"
+  },
+  "dependencies": {
+    "benchmark": "^2.1.4"
   }
 }
