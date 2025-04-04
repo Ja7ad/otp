@@ -3,6 +3,8 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/Ja7ad/otp)](https://goreportcard.com/report/github.com/Ja7ad/otp)
 [![Go Reference](https://pkg.go.dev/badge/github.com/Ja7ad/otp.svg)](https://pkg.go.dev/github.com/Ja7ad/otp)
 
+# 🔐 OTP
+
 A high-performance, zero-dependency Go package for generating and validating TOTP and HOTP one-time passwords — RFC [4226](https://datatracker.ietf.org/doc/html/rfc4226) and RFC [6238](https://datatracker.ietf.org/doc/html/rfc6238) compliant.
 
 
@@ -28,7 +30,7 @@ A high-performance, zero-dependency Go package for generating and validating TOT
 - Thoroughly tested against official RFC test vectors  
 - Includes fuzz tests, benchmark coverage, and solid algorithm validation
 
-## Installation (Go 1.24 >=)
+## 📦 Installation (Go >= 1.24)
 
 ```shell
 go get -u github.com/Ja7ad/otp
@@ -98,9 +100,9 @@ $$
 $$
 
 
-## Example
+## 📚 Usage
 
-TOTP generation example
+**TOTP generation example**
 
 ```go
 package main
@@ -152,7 +154,7 @@ func main() {
 }
 ```
 
-HOTP example code
+**HOTP example code**
 
 ```go
 package main
@@ -203,7 +205,17 @@ func main() {
 }
 ```
 
-### 📖 References
+## 🤝 Contributing
+
+We welcome contributions of all kinds — from fixing bugs and improving documentation to implementing new RFCs.
+
+Please read our [Contributing Guide](CONTRIBUTING.md) to get started. It includes setup instructions, coding standards, and development workflows.
+
+Whether you're filing an issue, submitting a pull request, or suggesting an improvement — thank you for helping make this library better! 🙌
+
+
+
+## 📖 References
 
 - [RFC 4226 - HOTP](https://datatracker.ietf.org/doc/html/rfc4226)
 - [RFC 6238 - TOTP](https://datatracker.ietf.org/doc/html/rfc6238)
