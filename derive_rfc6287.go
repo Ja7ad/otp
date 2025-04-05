@@ -40,7 +40,7 @@ func deriveRFC6287(secret []byte, s Suite, input OCRAInput) (string, error) {
 	mac := hp.new(secret)
 	mac.Write(msg)
 	sum := mac.Sum(nil)
-	otp := truncate(sum, cfg.Digits)
+	otp := truncate(sum, mod10[cfg.Digits])
 
 	return formatDecimal(otp, cfg.Digits), nil
 }

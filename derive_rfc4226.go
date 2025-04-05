@@ -21,7 +21,7 @@ func deriveRFC4226(secret []byte, counter uint64, digits int, algo Algorithm) (s
 	sum := mac.Sum(nil)
 
 	// Dynamic truncation
-	otp := truncate(sum, digits)
+	otp := truncate(sum, mod10[digits])
 
 	if digits <= 8 {
 		return shortDigit(otp, digits), nil

@@ -33,13 +33,6 @@ func DeriveRFC4226Wasm(secret []byte, counter uint64, digits int, algo Algorithm
 	mac.Write(buf[:])
 	sum := mac.Sum(nil)
 
-	offset := sum[len(sum)-1] & maskOffset
-	bin := (uint32(sum[offset]) << 24) |
-		(uint32(sum[offset+1]) << 16) |
-		(uint32(sum[offset+2]) << 8) |
-		uint32(sum[offset+3])
-	code := bin & mask31BitInt
-
 	var mod uint64
 	if digits >= 1 && digits <= 9 {
 		mod = mod10[digits]
@@ -47,9 +40,9 @@ func DeriveRFC4226Wasm(secret []byte, counter uint64, digits int, algo Algorithm
 		mod = pow10Wasm(digits)
 	}
 
-	otp := uint64(code) % mod
+	code := truncate(sum, mod)
 
-	s := strconv.FormatUint(otp, 10)
+	s := strconv.FormatUint(uint64(code), 10)
 	if len(s) < digits {
 		padding := make([]byte, digits-len(s))
 		for i := range padding {
