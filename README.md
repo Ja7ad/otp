@@ -13,7 +13,7 @@ A high-performance, zero-dependency Go package for generating and validating TOT
 - [Comparison](#-comparison)
   - [Performance](#-performance-comparison)
   - [Features](#-feature-comparison)
-- [Proof algorthim](#-algorithm-rfc)
+- [Proof algorithm](#-algorithm-rfc)
 - [Example](#example)
 - [Contributing](#-contributing)
 - [Reference](#-references)
