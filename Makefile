@@ -4,11 +4,11 @@ install-tools:
 
 unit_test:
 	@echo "Running unit tests..."
-	@go test ./...
+	@go test ./... -v
 
 race_test:
 	@echo "Running race condition tests..."
-	@go test ./... -race
+	@go test ./... -race -v
 
 fuzz_test:
 	@echo "Running fuzzing tests..."
