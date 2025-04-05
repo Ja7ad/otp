@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-// RFC 4226 test vectors - Base32("12345678901234567890")
+// RFC 4226 test rfc6287Vectors - Base32("12345678901234567890")
 const hotpSecretBase32 = "GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ"
 
 var hotpExpectedCodes = []string{
@@ -31,7 +31,7 @@ func TestDeriveOTPWasm_HOTP_RFC4226(t *testing.T) {
 
 	for counter, expected := range hotpExpectedCodes {
 		t.Run("Counter_"+string(rune(counter)), func(t *testing.T) {
-			code, err := DeriveOTPWasm(secret, uint64(counter), 6, SHA1)
+			code, err := DeriveRFC4226Wasm(secret, uint64(counter), 6, SHA1)
 			if err != nil {
 				t.Fatalf("Unexpected error: %v", err)
 			}

@@ -12,8 +12,8 @@ import (
 	"strconv"
 )
 
-// DeriveOTPWasm generates a HOTP code (used by both HOTP/TOTP) safely for WebAssembly (js/wasm).
-func DeriveOTPWasm(secret []byte, counter uint64, digits int, algo Algorithm) (string, error) {
+// DeriveRFC4226Wasm generates a HOTP code (used by both HOTP/TOTP) safely for WebAssembly (js/wasm).
+func DeriveRFC4226Wasm(secret []byte, counter uint64, digits int, algo Algorithm) (string, error) {
 	var h func() hash.Hash
 	switch algo {
 	case SHA1:

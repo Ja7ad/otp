@@ -26,7 +26,7 @@ func GenerateHOTP(secret string, counter uint64, param *Param) (string, error) {
 		return "", err
 	}
 
-	return deriveOTP(secretBuf, counter, param.Digits.Int(), param.Algorithm)
+	return deriveRFC4226(secretBuf, counter, param.Digits.Int(), param.Algorithm)
 }
 
 // GenerateHOTPURL constructs an otpauth:// URL for configuring HOTP-based authenticators.
@@ -70,7 +70,7 @@ func ValidateHOTP(secret, code string, counter uint64, param *Param) (bool, erro
 			c = counter + uint64(i)
 		}
 
-		valid, err := validateOTP(code, secretBuf, c, param.Digits, param.Algorithm)
+		valid, err := validateRFC4226(code, secretBuf, c, param.Digits, param.Algorithm)
 		if err == nil && valid {
 			return true, nil
 		}

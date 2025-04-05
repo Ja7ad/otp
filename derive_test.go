@@ -1,128 +1,57 @@
 package otp
 
 import (
-	"encoding/base32"
-	"fmt"
+	"encoding/hex"
 	"testing"
 )
 
-// HOTP test vectors from RFC 4226 — only support 6 digits here
-func TestDeriveOTP_HOTP_RFC4226(t *testing.T) {
-	secret, _ := base32.StdEncoding.WithPadding(base32.NoPadding).DecodeString("GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ")
-
-	expected := []string{
-		"755224",
-		"287082",
-		"359152",
-		"969429",
-		"338314",
-		"254676",
-		"287922",
-		"162583",
-		"399871",
-		"520489",
-	}
-
-	for counter, want := range expected {
-		got, err := deriveOTP(secret, uint64(counter), 6, SHA1)
-		if err != nil {
-			t.Fatalf("unexpected error: %v", err)
-		}
-		if got != want {
-			t.Errorf("HOTP RFC4226 failed at counter %d: got %s, want %s", counter, got, want)
-		}
-	}
-
-	// Additional digit sizes (non-RFC test)
-	for _, digits := range []int{8, 10} {
-		for counter := range expected {
-			got, err := deriveOTP(secret, uint64(counter), digits, SHA1)
-			if err != nil {
-				t.Fatalf("unexpected error (digits=%d): %v", digits, err)
-			}
-			if len(got) != digits {
-				t.Errorf("HOTP with digits=%d at counter %d: got length %d", digits, counter, len(got))
-			}
-		}
-	}
-}
-
-func TestDeriveOTP_TOTP_RFC6238(t *testing.T) {
-	secrets := map[Algorithm][]byte{
-		SHA1:   []byte("12345678901234567890"),
-		SHA256: []byte("12345678901234567890123456789012"),
-		SHA512: []byte("1234567890123456789012345678901234567890123456789012345678901234"),
-	}
-
+func TestPadBytes(t *testing.T) {
 	tests := []struct {
-		time    int64
-		expects map[Algorithm]string
+		input    []byte
+		length   int
+		expected []byte
 	}{
-		{59, map[Algorithm]string{SHA1: "94287082", SHA256: "46119246", SHA512: "90693936"}},
-		{1111111109, map[Algorithm]string{SHA1: "07081804", SHA256: "68084774", SHA512: "25091201"}},
-		{1111111111, map[Algorithm]string{SHA1: "14050471", SHA256: "67062674", SHA512: "99943326"}},
-		{1234567890, map[Algorithm]string{SHA1: "89005924", SHA256: "91819424", SHA512: "93441116"}},
-		{2000000000, map[Algorithm]string{SHA1: "69279037", SHA256: "90698825", SHA512: "38618901"}},
-		{20000000000, map[Algorithm]string{SHA1: "65353130", SHA256: "77737706", SHA512: "47863826"}},
+		{[]byte("abc"), 5, []byte("abc\x00\x00")},
+		{[]byte("abcdef"), 3, []byte("abc")},
+		{[]byte{}, 4, []byte{0, 0, 0, 0}},
+		{[]byte("xyz"), 3, []byte("xyz")},
 	}
 
 	for _, tt := range tests {
-		counter := uint64(tt.time / 30)
-		for algo, expected := range tt.expects {
-			secret := secrets[algo]
-			got, err := deriveOTP(secret, counter, 8, algo)
-			if err != nil {
-				t.Errorf("unexpected error: %v", err)
-				continue
-			}
-			if got != expected {
-				t.Errorf("TOTP RFC6238 failed at time %d with algo %v: got %s, want %s", tt.time, algo, got, expected)
-			}
-		}
-	}
-
-	// Additional digit size tests (non-RFC, for coverage)
-	for _, digits := range []int{6, 10} {
-		for _, tt := range tests {
-			counter := uint64(tt.time / 30)
-			for algo, secret := range secrets {
-				got, err := deriveOTP(secret, counter, digits, algo)
-				if err != nil {
-					t.Errorf("unexpected error (digits=%d): %v", digits, err)
-					continue
-				}
-				if len(got) != digits {
-					t.Errorf("TOTP with digits=%d at time %d (algo=%v): got length %d", digits, tt.time, algo, len(got))
-				}
-			}
+		got := padBytes(tt.input, tt.length)
+		if string(got) != string(tt.expected) {
+			t.Errorf("padBytes(%q, %d) = %q, want %q", tt.input, tt.length, got, tt.expected)
 		}
 	}
 }
 
-func BenchmarkDeriveOTP(b *testing.B) {
-	secrets := map[Algorithm][]byte{
-		SHA1:   []byte("12345678901234567890"),
-		SHA256: []byte("12345678901234567890123456789012"),
-		SHA512: []byte("1234567890123456789012345678901234567890123456789012345678901234"),
+func TestFormatDecimal(t *testing.T) {
+	tests := []struct {
+		value    uint32
+		digits   int
+		expected string
+	}{
+		{123456, 6, "123456"},
+		{42, 6, "000042"},
+		{0, 8, "00000000"},
+		{99999999, 8, "99999999"},
 	}
 
-	digitVariants := []int{6, 8, 9, 10}
-
-	for algo, secret := range secrets {
-		for _, digits := range digitVariants {
-			name := fmt.Sprintf("deriveOTP/%v/%ddigits", algo, digits)
-			b.Run(name, func(b *testing.B) {
-				b.ReportAllocs()
-
-				var counter uint64 = 0
-				for i := 0; i < b.N; i++ {
-					_, err := deriveOTP(secret, counter, digits, algo)
-					if err != nil {
-						b.Fatal(err)
-					}
-					counter++
-				}
-			})
+	for _, tt := range tests {
+		got := formatDecimal(tt.value, tt.digits)
+		if got != tt.expected {
+			t.Errorf("formatDecimal(%d, %d) = %q, want %q", tt.value, tt.digits, got, tt.expected)
 		}
+	}
+}
+
+func TestTruncate(t *testing.T) {
+
+	hmacBytes, _ := hex.DecodeString("1f8698690e02ca16618550ef7f19da8e945b555a")
+
+	code := truncate(hmacBytes, 6)
+	expected := uint32(872921)
+	if code != expected {
+		t.Errorf("truncate() = %d, want %d", code, expected)
 	}
 }

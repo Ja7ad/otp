@@ -33,6 +33,51 @@ func ExampleGenerateHOTP() {
 	fmt.Println(code)
 }
 
+func ExampleGenerateOCRA() {
+	secret, err := RandomSecret(SHA1)
+	if err != nil {
+		panic(err)
+	}
+
+	suite := MustRawSuite("OCRA-1:HOTP-SHA1-6:QN08")
+
+	code, err := GenerateOCRA(secret, suite, OCRAInput{
+		Challenge: []byte("12345678"),
+	})
+
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(code)
+}
+
+func ExampleValidateOCRA() {
+	secret, err := RandomSecret(SHA1)
+	if err != nil {
+		panic(err)
+	}
+
+	suite := MustRawSuite("OCRA-1:HOTP-SHA1-6:QN08")
+
+	code, err := GenerateOCRA(secret, suite, OCRAInput{
+		Challenge: []byte("12345678"),
+	})
+
+	if err != nil {
+		panic(err)
+	}
+
+	ok, err := ValidateOCRA(code, secret, suite, OCRAInput{
+		Challenge: []byte("12345678"),
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(ok)
+}
+
 func ExampleValidateTOTP() {
 	secret, err := RandomSecret(SHA1)
 	if err != nil {

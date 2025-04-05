@@ -5,7 +5,7 @@
 
 # 🔐 OTP
 
-A high-performance, zero-dependency Go package for generating and validating TOTP and HOTP one-time passwords — RFC [4226](https://datatracker.ietf.org/doc/html/rfc4226) and RFC [6238](https://datatracker.ietf.org/doc/html/rfc6238) compliant.
+A high-performance, zero-dependency Go package for generating and validating TOTP, HOTP and OCRA one-time passwords — RFC [4226](https://datatracker.ietf.org/doc/html/rfc4226), RFC [6238](https://datatracker.ietf.org/doc/html/rfc6238) and RFC [6287](https://datatracker.ietf.org/doc/html/rfc6287) compliant.
 
 
 - [Feature](#-features)
@@ -20,7 +20,7 @@ A high-performance, zero-dependency Go package for generating and validating TOT
 
 - Zero dependencies – fully self-contained, no external packages  
 - High performance with low allocations
-- Supports HOTP (RFC [4226](https://datatracker.ietf.org/doc/html/rfc4226)) and TOTP (RFC [6238](https://datatracker.ietf.org/doc/html/rfc6238)) algorithms  
+- Supports HOTP (RFC [4226](https://datatracker.ietf.org/doc/html/rfc4226)), TOTP (RFC [6238](https://datatracker.ietf.org/doc/html/rfc6238)) and OCRA (RFC [6287](https://datatracker.ietf.org/doc/html/rfc6287)) algorithms  
 - Configurable OTP digit lengths: 6, 8, or 10  
 - Supports SHA1, SHA256, and SHA512 HMAC algorithms  
 - Constant-time OTP validation to prevent timing attacks  
@@ -72,11 +72,13 @@ This comparison is for `Ja7ad/otp` vs `pquerna/otp`
 
 ## 📑 Algorithm (RFC)
 
-- [RFC 4226 / 6238](docs/rfc4226.md) algorithm
+- [RFC 4226 / 6238](docs/rfc4226.md) proof algorithm
+- [RFC 6287](docs/rfc6287.md) proof algorithm
 
 ## 📚 Usage
 
-**TOTP generation example**
+
+<details><summary>TOTP example</summary>
 
 ```go
 package main
@@ -128,7 +130,9 @@ func main() {
 }
 ```
 
-**HOTP example code**
+</details>
+
+<details><summary>HOTP example code</summary>
 
 ```go
 package main
@@ -179,6 +183,47 @@ func main() {
 }
 ```
 
+</details>
+
+<details><summary>OCRA example code</summary>
+
+```go
+package main
+
+import (
+	"fmt"
+	"github.com/Ja7ad/otp"
+)
+
+func main() {
+	secret, err := otp.RandomSecret(otp.SHA1)
+	if err != nil {
+		panic(err)
+	}
+
+	suite := otp.MustRawSuite("OCRA-1:HOTP-SHA1-6:QN08")
+
+	code, err := otp.GenerateOCRA(secret, suite, otp.OCRAInput{
+		Challenge: []byte("12345678"),
+	})
+
+	if err != nil {
+		panic(err)
+	}
+
+	ok, err := otp.ValidateOCRA(secret, code, suite, otp.OCRAInput{
+		Challenge: []byte("12345678"),
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(ok)
+}
+```
+
+</details>
+
 ## 🤝 Contributing
 
 We welcome contributions of all kinds — from fixing bugs and improving documentation to implementing new RFCs.
@@ -191,5 +236,6 @@ Whether you're filing an issue, submitting a pull request, or suggesting an impr
 
 ## 📖 References
 
+- [RFC 6287 - OCRA](https://datatracker.ietf.org/doc/html/rfc6287)
 - [RFC 4226 - HOTP](https://datatracker.ietf.org/doc/html/rfc4226)
 - [RFC 6238 - TOTP](https://datatracker.ietf.org/doc/html/rfc6238)

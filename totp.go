@@ -29,7 +29,7 @@ func GenerateTOTP(secret string, t time.Time, param *Param) (string, error) {
 		return "", err
 	}
 
-	return deriveOTP(secretBuf, TimeCounterFunc(t, param.Period), param.Digits.Int(), param.Algorithm)
+	return deriveRFC4226(secretBuf, TimeCounterFunc(t, param.Period), param.Digits.Int(), param.Algorithm)
 }
 
 // GenerateTOTPURL constructs an otpauth:// URL for configuring TOTP-based authenticators (e.g., Google Authenticator).
@@ -69,7 +69,7 @@ func ValidateTOTP(secret, code string, t time.Time, param *Param) (bool, error) 
 	counter := TimeCounterFunc(t, period)
 
 	for i := -int64(skew); i <= int64(skew); i++ {
-		valid, err := validateOTP(code, secretBuf, counter+uint64(i), param.Digits, param.Algorithm)
+		valid, err := validateRFC4226(code, secretBuf, counter+uint64(i), param.Digits, param.Algorithm)
 		if err == nil && valid {
 			return true, nil
 		}
