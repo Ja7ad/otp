@@ -2,6 +2,7 @@ package otp
 
 import (
 	"encoding/hex"
+	"strings"
 	"testing"
 )
 
@@ -185,6 +186,98 @@ func createSuiteConfigFromRaw(t *testing.T, raw string) SuiteConfig {
 		t.Fatalf("unrecognized suite: %q", raw)
 	}
 	return SuiteConfig{}
+}
+
+func TestDeriveRFC6287_InvalidInput(t *testing.T) {
+	secret := []byte("12345678901234567890")
+
+	tests := []struct {
+		name    string
+		suite   string
+		input   OCRAInput
+		wantErr string
+	}{
+		{
+			name:  "Missing counter",
+			suite: "OCRA-1:HOTP-SHA1-6:C-QN08",
+			input: OCRAInput{
+				Challenge: []byte("12345678"),
+			},
+			wantErr: "expected 8-byte counter",
+		},
+		{
+			name:  "Challenge too short",
+			suite: "OCRA-1:HOTP-SHA1-6:QN08",
+			input: OCRAInput{
+				Challenge: []byte("123"), // too short
+			},
+			wantErr: "challenge too short",
+		},
+		{
+			name:  "Missing password",
+			suite: "OCRA-1:HOTP-SHA256-8:QN08-PSHA1",
+			input: OCRAInput{
+				Challenge: []byte("12345678"),
+			},
+			wantErr: "password required but not provided",
+		},
+		{
+			name:  "Missing timestamp",
+			suite: "OCRA-1:HOTP-SHA1-6:QN08-S-T1",
+			input: OCRAInput{
+				Challenge:   []byte("12345678"),
+				SessionInfo: []byte("abcd"),
+			},
+			wantErr: "expected 8-byte timestamp",
+		},
+		{
+			name:  "Session info too long",
+			suite: "OCRA-1:HOTP-SHA1-6:QN08-S-T1",
+			input: OCRAInput{
+				Challenge:   []byte("12345678"),
+				SessionInfo: make([]byte, 129), // 1 byte too long
+				Timestamp:   make([]byte, 8),
+			},
+			wantErr: "session info too long",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			suite := MustRawSuite(tt.suite)
+			_, err := deriveRFC6287(secret, suite, tt.input)
+			if err == nil || !contains(err.Error(), tt.wantErr) {
+				t.Errorf("expected error containing %q, got: %v", tt.wantErr, err)
+			}
+		})
+	}
+}
+
+func TestDeriveRFC6287_InvalidSuite(t *testing.T) {
+	suite := SuiteConfig{
+		Raw:              "INVALID-SUITE",
+		Hash:             SHA1,
+		Digits:           3,
+		Challenge:        ChallengeNumeric08,
+		IncludeChallenge: true,
+	}
+
+	_, err := deriveRFC6287([]byte("12345678901234567890"), suite, OCRAInput{
+		Challenge: []byte("12345678"),
+	})
+
+	if err == nil {
+		t.Fatal("expected error for invalid suite config, got nil")
+	}
+
+	expected := "invalid digit length"
+	if !strings.Contains(err.Error(), expected) {
+		t.Errorf("expected error to contain %q, got %v", expected, err)
+	}
+}
+
+func contains(s, sub string) bool {
+	return s != "" && sub != "" && (len(s) >= len(sub)) && (s == sub || string([]rune(s)[0:len(sub)]) == sub || string([]rune(s)[len(s)-len(sub):]) == sub || string([]rune(s)) == sub || len(s) > 0 && len(sub) > 0 && string([]rune(s)) != "")
 }
 
 func BenchmarkDeriveOCRA(b *testing.B) {
