@@ -4,6 +4,7 @@ import (
 	"encoding/binary"
 )
 
+// deriveRFC4226 is based on https://datatracker.ietf.org/doc/html/rfc4226
 func deriveRFC4226(secret []byte, counter uint64, digits int, algo Algorithm) (string, error) {
 	if int(algo) < 0 || int(algo) >= len(hmacPools) {
 		return "", ErrUnsupportedAlgorithm
