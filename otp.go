@@ -117,6 +117,116 @@ type URLParam struct {
 	Algorithm Algorithm
 }
 
+// ChallengeFormat enumerates the possible challenge formats.
+type ChallengeFormat int
+
+const (
+	ChallengeNone      ChallengeFormat = iota
+	ChallengeNumeric08                 // QN08 → typically 8-digit numeric
+	ChallengeNumeric10                 // QN10 → typically 10-digit numeric
+	ChallengeAlpha08                   // QA08 → typically 8-char alphanumeric
+	ChallengeAlpha10                   // QA10 → typically 10-char alphanumeric
+	ChallengeHex08                     // QH08 → typically 8-hex-digit challenge
+	ChallengeHex10                     // QH10 → typically 10-hex-digit challenge
+)
+
+// PasswordHashAlgorithm enumerates the possible PIN/password hash types.
+type PasswordHashAlgorithm int
+
+const (
+	PasswordNone PasswordHashAlgorithm = iota
+	PasswordSHA1
+	PasswordSHA256
+	PasswordSHA512
+)
+
+// OCRAInput holds the raw data that will be concatenated (in the order defined
+// by RFC6287) for the HMAC computation. Which fields are required or optional
+// depends on the SuiteConfig (cfg).
+type OCRAInput struct {
+	// Counter is an 8-byte big-endian value, used if the suite has IncludeCounter=true.
+	// Typically incremented for each new OCRA calculation.
+	Counter []byte
+
+	// Challenge is the raw challenge data. If the suite has IncludeChallenge=true,
+	// we typically expect a certain minimum length (8 or 10 bytes) and a max of 128 bytes.
+	Challenge []byte
+
+	// Password is the hashed PIN or passphrase. If the suite has IncludePassword=true
+	// and the suite's PasswordHash is e.g. PasswordSHA1, we expect the length to match
+	// that hash (20 bytes for SHA-1, etc.).
+	Password []byte
+
+	// SessionInfo is optional user or system data (e.g. channel binding info), up to 128 bytes.
+	// Only used if IncludeSession=true.
+	SessionInfo []byte
+
+	// Timestamp is an 8-byte big-endian representation of the time-step
+	// if IncludeTimestamp=true (e.g. for T1M). Must be exactly 8 bytes.
+	Timestamp []byte
+}
+
+// validate checks that the input matches the suite's requirements.
+func (in OCRAInput) validate(cfg SuiteConfig) error {
+	// Counter => 8 bytes if included
+	if cfg.IncludeCounter && len(in.Counter) != 8 {
+		return fmt.Errorf("expected 8-byte counter, got %d", len(in.Counter))
+	}
+	// Challenge => up to 128 bytes, min length depends on format
+	if cfg.IncludeChallenge {
+		minimum := challengeLength(cfg.Challenge)
+		if len(in.Challenge) < minimum {
+			return fmt.Errorf("challenge too short: expected at least %d bytes, got %d", minimum, len(in.Challenge))
+		}
+		if len(in.Challenge) > 128 {
+			return fmt.Errorf("challenge too long: must not exceed 128 bytes, got %d", len(in.Challenge))
+		}
+	}
+	// Password => verify length matches the declared hash
+	if cfg.IncludePassword {
+		if len(in.Password) == 0 {
+			return fmt.Errorf("password required but not provided")
+		}
+		switch cfg.PasswordHash {
+		case PasswordSHA1:
+			if len(in.Password) != 20 {
+				return fmt.Errorf("PSHA1 password must be 20 bytes, got %d", len(in.Password))
+			}
+		case PasswordSHA256:
+			if len(in.Password) != 32 {
+				return fmt.Errorf("PSHA256 password must be 32 bytes, got %d", len(in.Password))
+			}
+		case PasswordSHA512:
+			if len(in.Password) != 64 {
+				return fmt.Errorf("PSHA512 password must be 64 bytes, got %d", len(in.Password))
+			}
+		}
+	}
+	// Session => up to 128 bytes
+	if cfg.IncludeSession && len(in.SessionInfo) > 128 {
+		return fmt.Errorf("session info too long: max 128 bytes, got %d", len(in.SessionInfo))
+	}
+	// Timestamp => 8 bytes if included
+	if cfg.IncludeTimestamp && len(in.Timestamp) != 8 {
+		return fmt.Errorf("expected 8-byte timestamp, got %d", len(in.Timestamp))
+	}
+	return nil
+}
+
+// challengeLength returns the minimum expected length (in bytes) for the
+// given ChallengeFormat. If QN08 means 8 digits, we treat that as "at least 8 bytes."
+func challengeLength(format ChallengeFormat) int {
+	switch format {
+	case ChallengeNumeric08, ChallengeAlpha08, ChallengeHex08:
+		return 8
+	case ChallengeNumeric10, ChallengeAlpha10, ChallengeHex10:
+		return 10
+	default:
+		// For ChallengeNone or any unrecognized format, minimum is 0.
+		return 0
+	}
+}
+
 // RandomSecret returns a base32-encoded random secret for the given algorithm.
 // The secret is of appropriate byte length for RFC-compliant HOTP/TOTP implementations.
 func RandomSecret(algo Algorithm) (string, error) {
