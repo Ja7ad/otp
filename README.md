@@ -43,20 +43,14 @@ go get -u github.com/Ja7ad/otp
 
 This comparison is for `Ja7ad/otp` vs `pquerna/otp`
 
-| Algorithm | Digits | Library        | `ns/op` | `B/op` | `allocs/op` | `N` (runs/sec) |
-|-----------|--------|----------------|---------|--------|--------------|----------------|
-| SHA1      | 6      | **Ja7ad/otp**  | **834.7**   | **480**   | **7**         | **1,452,314**  |
-| SHA1      | 6      | pquerna/otp    | 1420    | 592    | 13           | 785,282        |
-| SHA1      | 8      | **Ja7ad/otp**  | **825.3**   | **480**   | **7**         | **1,455,498**  |
-| SHA1      | 8      | pquerna/otp    | 1415    | 592    | 13           | 806,175        |
-| SHA256    | 6      | **Ja7ad/otp**  | **736.0**   | **520**   | **7**         | **1,620,219**  |
-| SHA256    | 6      | pquerna/otp    | 1495    | 728    | 13           | 801,048        |
-| SHA256    | 8      | **Ja7ad/otp**  | **746.1**   | **520**   | **7**         | **1,596,862**  |
-| SHA256    | 8      | pquerna/otp    | 1477    | 728    | 13           | 833,773        |
-| SHA512    | 6      | **Ja7ad/otp**  | **1398**    | **872**   | **7**         | **807,380**    |
-| SHA512    | 6      | pquerna/otp    | 2350    | 1224   | 13           | 432,844        |
-| SHA512    | 8      | **Ja7ad/otp**  | **1408**    | **872**   | **7**         | **728,832**    |
-| SHA512    | 8      | pquerna/otp    | 2359    | 1224   | 13           | 466,941        |
+| Algorithm | Suite                                | Digits | Library        | `ns/op` | `B/op` | `allocs/op` | `N` (runs/sec) |
+|-----------|----------------------------------------|--------|----------------|---------|--------|--------------|----------------|
+| SHA1      | `OCRA-1:HOTP-SHA1-6:QN08`              | 6      | **Ja7ad/otp**  | **1134**    | **552**   | **9**         | **881,058**    |
+| SHA1      | HOTP/TOTP (default)                    | 6      | pquerna/otp    | 1420    | 592    | 13           | 704,225        |
+| SHA256    | `OCRA-1:HOTP-SHA256-8:C-QN08-PSHA1`    | 8      | **Ja7ad/otp**  | **984.3**   | **592**   | **9**         | **1,015,907**  |
+| SHA256    | HOTP/TOTP (default)                    | 8      | pquerna/otp    | 1477    | 728    | 13           | 677,236        |
+| SHA512    | `OCRA-1:HOTP-SHA512-8:QN08-T1M`        | 8      | **Ja7ad/otp**  | **1752**    | **944**   | **9**         | **570,853**    |
+| SHA512    | HOTP/TOTP (default)                    | 8      | pquerna/otp    | 2359    | 1224   | 13           | 423,778        |
 
 
 | Metric            | Ja7ad/otp           | pquerna/otp        | ✅ Winner |
@@ -66,9 +60,22 @@ This comparison is for `Ja7ad/otp` vs `pquerna/otp`
 | **Allocations** (`allocs/op`) | **7** allocations | **13** allocations | ✅ **Ja7ad/otp** |
 | **Dependencies**  | **Zero** external deps | Relies on stdlib + extras | ✅ **Ja7ad/otp** |
 
-### 🔥 Example: SHA256, 6 digits
 - `Ja7ad/otp`: **736 ns**, **520 B**, **7 allocs**
 - `pquerna/otp`: **1495 ns**, **728 B**, **13 allocs**
+- 
+### ✅ Feature Comparison
+
+| Feature                     | Ja7ad/otp | pquerna/otp |
+|-----------------------------|-----------|-------------|
+| RFC 4226 HOTP               | ✅        | ✅          |
+| RFC 6238 TOTP               | ✅        | ✅          |
+| RFC 6287 OCRA               | ✅        | ❌          |
+| Built-in OCRA Suite Configs | ✅        | ❌          |
+| Full RFC Test Vector Suite | ✅        | ❌          |
+| Constant-Time Validation    | ✅        | ✅          |
+| Cross-platform Friendly     | ✅        | ✅          |
+| Zero Dependency Core        | ✅        | ❌ (uses crypto/rand + external parsing) |
+
 
 ## 📑 Algorithm (RFC)
 
