@@ -1,7 +1,6 @@
 package otp
 
 import (
-	"encoding/hex"
 	"testing"
 )
 
@@ -46,12 +45,43 @@ func TestFormatDecimal(t *testing.T) {
 }
 
 func TestTruncate(t *testing.T) {
+	tests := []struct {
+		name     string
+		hmac     []byte
+		mod      uint64
+		expected uint32
+	}{
+		{
+			name: "simple_case",
+			hmac: []byte{
+				0x00, 0x00, 0x00, 0x00, // this will be extracted
+				// filler to reach len=20
+				0x00, 0x00, 0x00, 0x00,
+				0x00, 0x00, 0x00, 0x00,
+				0x00, 0x00, 0x00, 0x00,
+				0x00, 0x00, 0x00, 0x00, // len=20, last byte = 0x00
+			},
+			mod:      1000000,
+			expected: 0, // 0 mod 10^6 = 0
+		},
+		{
+			name: "non-zero HMAC",
+			hmac: []byte{
+				0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
+				0x99, 0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF, 0x01,
+				0x12, 0x34, 0x56, 0x78, // offset = 0x78 & 0x0F = 0x08
+			},
+			mod:      1000000,
+			expected: uint32((uint64(((0x99 & 0x7F) << 24) | (0xAA << 16) | (0xBB << 8) | 0xCC)) & mask31BitInt % 1000000),
+		},
+	}
 
-	hmacBytes, _ := hex.DecodeString("1f8698690e02ca16618550ef7f19da8e945b555a")
-
-	code := truncate(hmacBytes, 6)
-	expected := uint32(872921)
-	if code != expected {
-		t.Errorf("truncate() = %d, want %d", code, expected)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := truncate(tt.hmac, tt.mod)
+			if got != tt.expected {
+				t.Errorf("truncate() = %d, want %d", got, tt.expected)
+			}
+		})
 	}
 }
