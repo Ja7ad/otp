@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-// RFC 4226 test vectors - Base32("12345678901234567890")
+// RFC 4226 test rfc6287Vectors - Base32("12345678901234567890")
 const hotpSecretBase32 = "GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ"
 
 var hotpExpectedCodes = []string{

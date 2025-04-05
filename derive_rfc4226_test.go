@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-// HOTP test vectors from RFC 4226 — only support 6 digits here
+// HOTP test rfc6287Vectors from RFC 4226 — only support 6 digits here
 func TestDeriveOTP_HOTP_RFC4226(t *testing.T) {
 	secret, _ := base32.StdEncoding.WithPadding(base32.NoPadding).DecodeString("GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ")
 
@@ -99,7 +99,7 @@ func TestDeriveOTP_TOTP_RFC6238(t *testing.T) {
 	}
 }
 
-func BenchmarkDeriveOTP(b *testing.B) {
+func BenchmarkDeriveRFC4226(b *testing.B) {
 	secrets := map[Algorithm][]byte{
 		SHA1:   []byte("12345678901234567890"),
 		SHA256: []byte("12345678901234567890123456789012"),
