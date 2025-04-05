@@ -412,7 +412,7 @@ func generateOTP(secret string, counter uint64, digits otp.Digits, algo otp.Algo
 		return "", fmt.Errorf("invalid secret - %s", err)
 	}
 
-	code, err := otp.DeriveOTPWasm(secBuf, counter, digits.Int(), algo)
+	code, err := otp.DeriveRFC4226Wasm(secBuf, counter, digits.Int(), algo)
 	if err != nil {
 		return "", fmt.Errorf("failed to generate OTP - %s", err)
 	}

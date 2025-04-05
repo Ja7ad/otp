@@ -11,7 +11,7 @@ func ValidateOTPWasm(code string, secret []byte, counter uint64, digits Digits, 
 		return false, ErrInvalidCodeLength
 	}
 
-	excepted, err := DeriveOTPWasm(secret, counter, digitInt, algo)
+	excepted, err := DeriveRFC4226Wasm(secret, counter, digitInt, algo)
 	if err != nil {
 		return false, err
 	}

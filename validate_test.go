@@ -57,7 +57,7 @@ func TestValidateOTP(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ok, err := validateOTP(tt.code, secret, tt.counter, tt.digits, tt.algo)
+			ok, err := validateRFC4226(tt.code, secret, tt.counter, tt.digits, tt.algo)
 
 			if tt.valid && (!ok || err != nil) {
 				t.Errorf("expected valid, got invalid: ok=%v, err=%v", ok, err)
@@ -94,7 +94,7 @@ func TestValidateOTP_RFC4226(t *testing.T) {
 
 	for counter, want := range expected {
 		t.Run("RFC4226_Counter_"+string(rune(counter)), func(t *testing.T) {
-			ok, err := validateOTP(want, secret, uint64(counter), 6, SHA1)
+			ok, err := validateRFC4226(want, secret, uint64(counter), 6, SHA1)
 			if err != nil {
 				t.Errorf("unexpected error: %v", err)
 			}
@@ -131,7 +131,7 @@ func TestValidateOTP_RFC6238(t *testing.T) {
 		counter := uint64(vec.time / 30)
 		for algo, expected := range vec.results {
 			secret := secrets[algo]
-			ok, err := validateOTP(expected, secret, counter, vec.digits, algo)
+			ok, err := validateRFC4226(expected, secret, counter, vec.digits, algo)
 			if err != nil {
 				t.Errorf("unexpected error at time %d with algo %v: %v", vec.time, algo, err)
 			}
@@ -169,12 +169,12 @@ func BenchmarkValidateOTP(b *testing.B) {
 			b.ReportAllocs()
 
 			for i := 0; i < b.N; i++ {
-				code, err := deriveOTP(secrets[tt.algo], uint64(i), tt.digits.Int(), tt.algo)
+				code, err := deriveRFC4226(secrets[tt.algo], uint64(i), tt.digits.Int(), tt.algo)
 				if err != nil {
 					b.Fatalf("unexpected error: %v", err)
 				}
 
-				valid, err := validateOTP(code, secrets[tt.algo], uint64(i), tt.digits, tt.algo)
+				valid, err := validateRFC4226(code, secrets[tt.algo], uint64(i), tt.digits, tt.algo)
 				if err != nil {
 					b.Fatalf("unexpected error: %v", err)
 				}

@@ -24,7 +24,7 @@ func TestDeriveOTP_HOTP_RFC4226(t *testing.T) {
 	}
 
 	for counter, want := range expected {
-		got, err := deriveOTP(secret, uint64(counter), 6, SHA1)
+		got, err := deriveRFC4226(secret, uint64(counter), 6, SHA1)
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
@@ -36,7 +36,7 @@ func TestDeriveOTP_HOTP_RFC4226(t *testing.T) {
 	// Additional digit sizes (non-RFC test)
 	for _, digits := range []int{8, 10} {
 		for counter := range expected {
-			got, err := deriveOTP(secret, uint64(counter), digits, SHA1)
+			got, err := deriveRFC4226(secret, uint64(counter), digits, SHA1)
 			if err != nil {
 				t.Fatalf("unexpected error (digits=%d): %v", digits, err)
 			}
@@ -70,7 +70,7 @@ func TestDeriveOTP_TOTP_RFC6238(t *testing.T) {
 		counter := uint64(tt.time / 30)
 		for algo, expected := range tt.expects {
 			secret := secrets[algo]
-			got, err := deriveOTP(secret, counter, 8, algo)
+			got, err := deriveRFC4226(secret, counter, 8, algo)
 			if err != nil {
 				t.Errorf("unexpected error: %v", err)
 				continue
@@ -86,7 +86,7 @@ func TestDeriveOTP_TOTP_RFC6238(t *testing.T) {
 		for _, tt := range tests {
 			counter := uint64(tt.time / 30)
 			for algo, secret := range secrets {
-				got, err := deriveOTP(secret, counter, digits, algo)
+				got, err := deriveRFC4226(secret, counter, digits, algo)
 				if err != nil {
 					t.Errorf("unexpected error (digits=%d): %v", digits, err)
 					continue
@@ -110,13 +110,13 @@ func BenchmarkDeriveOTP(b *testing.B) {
 
 	for algo, secret := range secrets {
 		for _, digits := range digitVariants {
-			name := fmt.Sprintf("deriveOTP/%v/%ddigits", algo, digits)
+			name := fmt.Sprintf("deriveRFC4226/%v/%ddigits", algo, digits)
 			b.Run(name, func(b *testing.B) {
 				b.ReportAllocs()
 
 				var counter uint64 = 0
 				for i := 0; i < b.N; i++ {
-					_, err := deriveOTP(secret, counter, digits, algo)
+					_, err := deriveRFC4226(secret, counter, digits, algo)
 					if err != nil {
 						b.Fatal(err)
 					}

@@ -54,7 +54,7 @@ var (
 	}
 )
 
-func deriveOTP(secret []byte, counter uint64, digits int, algo Algorithm) (string, error) {
+func deriveRFC4226(secret []byte, counter uint64, digits int, algo Algorithm) (string, error) {
 	if int(algo) < 0 || int(algo) >= len(hmacPools) {
 		return "", ErrUnsupportedAlgorithm
 	}

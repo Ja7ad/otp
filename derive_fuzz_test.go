@@ -18,7 +18,7 @@ func FuzzDeriveOTP(f *testing.F) {
 		}
 		algo := Algorithm(algoInt)
 
-		otp, err := deriveOTP(secret, counter, digits, algo)
+		otp, err := deriveRFC4226(secret, counter, digits, algo)
 		if err != nil {
 			t.Skip()
 		}
