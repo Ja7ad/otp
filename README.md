@@ -10,7 +10,9 @@ A high-performance, zero-dependency Go package for generating and validating TOT
 
 - [Feature](#-features)
 - [Installation](#installation-go-124-)
-- [Performance Comparison](#-performance-comparison)
+- [Comparison](#-comparison)
+  - [Performance](#-performance-comparison)
+  - [Features](#-feature-comparison)
 - [Proof algorthim](#-algorithm-rfc)
 - [Example](#example)
 - [Contributing](#-contributing)
@@ -43,7 +45,7 @@ go get -u github.com/Ja7ad/otp
 
 This comparison is performance and feature.
 
-### 🚀 Performance Comparison
+#### 🚀 Performance Comparison
 
 This comparison is for `Ja7ad/otp` vs `pquerna/otp`
 
@@ -67,7 +69,7 @@ This comparison is for `Ja7ad/otp` vs `pquerna/otp`
 - `Ja7ad/otp`: **736 ns**, **520 B**, **7 allocs**
 - `pquerna/otp`: **1495 ns**, **728 B**, **13 allocs**
 
-### ✅ Feature Comparison
+#### ✅ Feature Comparison
 
 | Feature                     | Ja7ad/otp | pquerna/otp |
 |-----------------------------|-----------|-------------|
