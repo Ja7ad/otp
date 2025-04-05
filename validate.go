@@ -23,3 +23,23 @@ func validateRFC4226(code string, secret []byte, counter uint64, digits Digits, 
 
 	return false, ErrInvalidCode
 }
+
+func validateRFC6287(code string, secret []byte, suite Suite, input OCRAInput) (bool, error) {
+	cfg := suite.Config()
+	expectedDigits := cfg.Digits
+
+	if len(code) != expectedDigits {
+		return false, ErrInvalidCodeLength
+	}
+
+	expected, err := deriveRFC6287(secret, suite, input)
+	if err != nil {
+		return false, err
+	}
+
+	if subtle.ConstantTimeCompare([]byte(code), []byte(expected)) == 1 {
+		return true, nil
+	}
+
+	return false, ErrInvalidCode
+}
