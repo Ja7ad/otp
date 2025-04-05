@@ -2,6 +2,7 @@ package otp
 
 import (
 	"encoding/base32"
+	"encoding/hex"
 	"fmt"
 	"testing"
 )
@@ -78,7 +79,7 @@ func TestValidateOTP_RFC4226(t *testing.T) {
 		t.Fatalf("failed to decode secret: %v", err)
 	}
 
-	// Test vectors from RFC 4226 Appendix D
+	// Test rfc6287Vectors from RFC 4226 Appendix D
 	expected := []string{
 		"755224",
 		"287082",
@@ -139,6 +140,67 @@ func TestValidateOTP_RFC6238(t *testing.T) {
 				t.Errorf("TOTP RFC6238 failed at time %d with algo %v: got invalid, want %s", vec.time, algo, expected)
 			}
 		}
+	}
+}
+
+func TestValidateRFC6287(t *testing.T) {
+	for _, vec := range rfc6287Vectors {
+		vec := vec // capture variable
+		t.Run(vec.Label, func(t *testing.T) {
+			// Build Suite from the raw suite string.
+			suite := MustRawSuite(vec.RawSuite)
+
+			// Decode secret key.
+			key, err := hex.DecodeString(vec.KeyHex)
+			if err != nil {
+				t.Fatalf("invalid key hex for %s: %v", vec.Label, err)
+			}
+
+			// Build OCRAInput.
+			var in OCRAInput
+
+			// For counter: convert decimal string to 8-byte big-endian.
+			if suite.Config().IncludeCounter && vec.Counter != "" {
+				c, err := ParseDecimalToBigEndian8(vec.Counter)
+				if err != nil {
+					t.Fatalf("parseCounter error for %s: %v", vec.Label, err)
+				}
+				in.Counter = c
+			}
+
+			// For challenge: use RFC 6287 conversion.
+			if suite.Config().IncludeChallenge && vec.Challenge != "" {
+				ch, err := ParseDecimalChallengeRFC6287(vec.Challenge)
+				if err != nil {
+					t.Fatalf("failed to parse challenge %q for %s: %v", vec.Challenge, vec.Label, err)
+				}
+				in.Challenge = ch
+			}
+
+			// For password: decode hex; for PSHA1 expect 20 bytes.
+			if suite.Config().IncludePassword && vec.PasswordHex != "" {
+				pw, err := hex.DecodeString(vec.PasswordHex)
+				if err != nil {
+					t.Fatalf("bad password hex for %s: %v", vec.Label, err)
+				}
+				in.Password = pw
+			}
+
+			// For timestamp: left-pad to 16 hex digits then decode to 8 bytes.
+			if suite.Config().IncludeTimestamp && vec.TimestampHex != "" {
+				// Use our helper to pad to 8 bytes.
+				in.Timestamp = MustHexPadLeft(vec.TimestampHex, 8)
+			}
+
+			ok, err := validateRFC6287(vec.Expected, key, suite, in)
+			if err != nil {
+				t.Errorf("unexpected error for %s: %v", vec.Label, err)
+				return
+			}
+			if !ok {
+				t.Errorf("Mismatch for suite=%s, label=%s\nExpected=%s", vec.RawSuite, vec.Label, vec.Expected)
+			}
+		})
 	}
 }
 
