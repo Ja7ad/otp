@@ -106,15 +106,13 @@ func formatDecimal(val uint32, digits int) string {
 	return string(out)
 }
 
-func truncate(sum []byte, digits int) uint32 {
+func truncate(sum []byte, mod uint64) uint32 {
 	offset := sum[len(sum)-1] & maskOffset
 	bin := (uint32(sum[offset]) << 24) |
 		(uint32(sum[offset+1]) << 16) |
 		(uint32(sum[offset+2]) << 8) |
 		uint32(sum[offset+3])
 	code := bin & mask31BitInt
-
-	mod := mod10[digits]
 
 	return uint32(uint64(code) % mod)
 }
