@@ -76,11 +76,6 @@ func NewSuite(cfg SuiteConfig) (Suite, error) {
 		return nil, err
 	}
 
-	_, ok := knownSuites[cfg.Raw]
-	if !ok {
-		return nil, ErrInvalidRawSuite
-	}
-
 	return RawSuite{SuiteConfig: cfg}, nil
 }
 
