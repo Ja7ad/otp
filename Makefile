@@ -12,7 +12,8 @@ race_test:
 
 fuzz_test:
 	@echo "Running fuzzing tests..."
-	@ go test -fuzz=FuzzDeriveOTP -fuzztime=30s
+	@ go test -fuzz=FuzzDeriveRFC4226 -fuzztime=30s
+	@ go test -fuzz=FuzzDeriveRFC6287 -fuzztime=30s
 
 test: unit_test race_test fuzz_test
 
