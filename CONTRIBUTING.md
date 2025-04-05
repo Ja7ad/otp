@@ -4,18 +4,6 @@ We value clean code, security, and performance. Whether you're fixing bugs, impl
 
 ---
 
-## 🧩 Project Overview
-
-This package provides:
-
-- HOTP/TOTP implementations based on RFC 4226 / RFC 6238
-- RFC 6287 (OCRA/SecurID-style) compatibility (coming soon)
-- URL generation for `otpauth://` schemes
-- Base32 secret handling, validation utilities, and more
-- WASM-compatible logic (used by [otp-js](https://npmjs.com/package/otp-js))
-
----
-
 ## ⚙️ Development Setup
 
 ### 1. Clone the Repository
