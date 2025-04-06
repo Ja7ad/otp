@@ -33,13 +33,59 @@ A high-performance, zero-dependency Go package for generating and validating TOT
 - Thoroughly tested against official RFC test vectors  
 - Includes fuzz tests, benchmark coverage, and solid algorithm validation
 
+Here’s your updated `README.md` **Installation** section with release and Docker image info:
+
+
 ## 📦 Installation (Go >= 1.24)
 
-```shell
+### 🛠️ Using Go
+
+```bash
 go get -u github.com/Ja7ad/otp
 ```
 
-> Binding nodejs is available [here](./otp-js).
+> Node.js bindings are available [here](./otp-js).
+
+---
+
+### 🚀 Prebuilt Binary
+
+Download the latest CLI/API binary for your platform from the [latest release page](https://github.com/Ja7ad/otp/releases/latest).
+
+```shell
+$ otp -serve localhost:8080
+2025/04/06 10:41:48 INFO starting server address=:8080
+2025/04/06 10:41:50 INFO request method=GET path=/docs/index.html status=200 duration=740.394µs
+2025/04/06 10:41:51 INFO request method=GET path=/docs/doc.json status=200 duration=803.67µs
+2025/04/06 10:41:53 INFO request method=GET path=/ status=200 duration=149.042µs
+2025/04/06 10:41:54 INFO request method=GET path=/docs status=302 duration=24.444µs
+```
+
+| Method | Path               | Description                      |
+|--------|--------------------|----------------------------------|
+| POST   | `/totp/generate`   | Generate a TOTP code             |
+| POST   | `/totp/validate`   | Validate a TOTP code             |
+| POST   | `/hotp/generate`   | Generate a HOTP code             |
+| POST   | `/hotp/validate`   | Validate a HOTP code             |
+| POST   | `/ocra/generate`   | Generate an OCRA code            |
+| POST   | `/ocra/validate`   | Validate an OCRA code            |
+| GET    | `/otp/secret`      | Generate a random base32 secret  |
+| POST   | `/otp/url`         | Generate otpauth URL             |
+| GET    | `/ocra/suites`     | List supported OCRA suites       |
+| POST   | `/ocra/suite`      | Parse and describe suite config  |
+
+---
+
+### 🐳 Docker Image
+
+You can also run the server using Docker:
+
+```bash
+docker pull ja7adr/otp
+docker run -p 8080:8080 ja7adr/otp
+```
+
+> Image available at [Docker Hub](https://hub.docker.com/r/ja7adr/otp)
 
 ## 🔬 Comparison
 
