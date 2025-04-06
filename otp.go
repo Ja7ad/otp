@@ -215,37 +215,49 @@ func (in OCRAInput) Validate(cfg SuiteConfig) error {
 }
 
 func HexInputToOCRA(counter, challenge, password, sessionInfo, timestamp string) (OCRAInput, error) {
-	input := OCRAInput{}
+	var input OCRAInput
+	var b []byte
+	var err error
 
-	b, err := hex.DecodeString(counter)
-	if err != nil {
-		return OCRAInput{}, err
+	if counter != "" {
+		b, err = hex.DecodeString(counter)
+		if err != nil {
+			return OCRAInput{}, fmt.Errorf("failed to decode counter: %w", err)
+		}
+		input.Counter = b
 	}
-	input.Counter = b
 
-	b, err = hex.DecodeString(challenge)
-	if err != nil {
-		return OCRAInput{}, err
+	if challenge != "" {
+		b, err = hex.DecodeString(challenge)
+		if err != nil {
+			return OCRAInput{}, fmt.Errorf("failed to decode challenge: %w", err)
+		}
+		input.Challenge = b
 	}
-	input.Challenge = b
 
-	b, err = hex.DecodeString(password)
-	if err != nil {
-		return OCRAInput{}, err
+	if password != "" {
+		b, err = hex.DecodeString(password)
+		if err != nil {
+			return OCRAInput{}, fmt.Errorf("failed to decode password: %w", err)
+		}
+		input.Password = b
 	}
-	input.Password = b
 
-	b, err = hex.DecodeString(sessionInfo)
-	if err != nil {
-		return OCRAInput{}, err
+	if sessionInfo != "" {
+		b, err = hex.DecodeString(sessionInfo)
+		if err != nil {
+			return OCRAInput{}, fmt.Errorf("failed to decode session info: %w", err)
+		}
+		input.SessionInfo = b
 	}
-	input.SessionInfo = b
 
-	b, err = hex.DecodeString(timestamp)
-	if err != nil {
-		return OCRAInput{}, err
+	if timestamp != "" {
+		b, err = hex.DecodeString(timestamp)
+		if err != nil {
+			return OCRAInput{}, fmt.Errorf("failed to decode timestamp: %w", err)
+		}
+		input.Timestamp = b
 	}
-	input.Timestamp = b
 
 	return input, nil
 }
