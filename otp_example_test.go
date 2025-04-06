@@ -44,7 +44,6 @@ func ExampleGenerateOCRA() {
 	code, err := GenerateOCRA(secret, suite, OCRAInput{
 		Challenge: []byte("12345678"),
 	})
-
 	if err != nil {
 		panic(err)
 	}
@@ -63,7 +62,6 @@ func ExampleValidateOCRA() {
 	code, err := GenerateOCRA(secret, suite, OCRAInput{
 		Challenge: []byte("12345678"),
 	})
-
 	if err != nil {
 		panic(err)
 	}

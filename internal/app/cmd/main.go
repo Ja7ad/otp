@@ -2,11 +2,12 @@ package main
 
 import (
 	"flag"
-	"github.com/Ja7ad/otp/internal/app/api"
 	"log/slog"
 	"os"
 	"os/signal"
 	"syscall"
+
+	"github.com/Ja7ad/otp/internal/app/api"
 )
 
 var (

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/Ja7ad/otp"
 )
 
@@ -16,7 +17,6 @@ func main() {
 	code, err := otp.GenerateOCRA(secret, suite, otp.OCRAInput{
 		Challenge: []byte("12345678"),
 	})
-
 	if err != nil {
 		panic(err)
 	}

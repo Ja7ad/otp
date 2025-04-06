@@ -2,8 +2,9 @@ package api
 
 import (
 	"encoding/json"
-	"github.com/valyala/fasthttp"
 	"net/http"
+
+	"github.com/valyala/fasthttp"
 )
 
 const (

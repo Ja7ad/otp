@@ -1,11 +1,12 @@
 package api
 
 import (
-	"github.com/valyala/fasthttp"
 	"log/slog"
 	"runtime"
 	"strings"
 	"time"
+
+	"github.com/valyala/fasthttp"
 )
 
 // Middleware defines the middleware function signature for fasthttp

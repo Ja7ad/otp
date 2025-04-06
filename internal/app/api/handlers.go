@@ -2,10 +2,11 @@ package api
 
 import (
 	"encoding/json"
-	"github.com/Ja7ad/otp"
-	"github.com/valyala/fasthttp"
 	"strings"
 	"time"
+
+	"github.com/Ja7ad/otp"
+	"github.com/valyala/fasthttp"
 )
 
 // totpGeneration generates a TOTP code.

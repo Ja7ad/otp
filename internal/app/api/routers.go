@@ -1,10 +1,11 @@
 package api
 
 import (
+	"strings"
+
 	_ "github.com/Ja7ad/otp/internal/app/docs"
 	fastHttpSwagger "github.com/swaggo/fasthttp-swagger"
 	"github.com/valyala/fasthttp"
-	"strings"
 )
 
 func routers(ctx *fasthttp.RequestCtx) {

@@ -2,8 +2,9 @@ package api
 
 import (
 	"errors"
-	"github.com/Ja7ad/otp"
 	"strings"
+
+	"github.com/Ja7ad/otp"
 )
 
 type otpGenerateReq struct {

@@ -3,9 +3,10 @@ package api
 import (
 	"context"
 	"fmt"
-	"github.com/valyala/fasthttp"
 	"log/slog"
 	"time"
+
+	"github.com/valyala/fasthttp"
 )
 
 type Server struct {
