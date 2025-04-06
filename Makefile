@@ -31,6 +31,10 @@ build-wasm-js:
 	@echo "Running build wasm..."
 	GOOS=js GOARCH=wasm go build -o otp-js/lib/otp.wasm ./wasm/main.go
 
+gen-swagger:
+	@echo "Generate swagger..."
+	@cd internal/app && swag init -g api/handlers.go && swag fmt
+
 .PHONY: test unit_test race_test fuzz_test
 .PHONY: fmt vet check
 .PHONY: build-wasm-js
