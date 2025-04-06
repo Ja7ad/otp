@@ -3,7 +3,6 @@ package api
 import (
 	"encoding/json"
 	"github.com/Ja7ad/otp"
-	"github.com/Ja7ad/otp/internal/app/version"
 	"github.com/valyala/fasthttp"
 	"strings"
 	"time"
