@@ -180,9 +180,9 @@ func TestOCRAInputValidate(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := tt.input.validate(tt.cfg)
+			err := tt.input.Validate(tt.cfg)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("OCRAInput.validate() error = %v, wantErr = %v", err, tt.wantErr)
+				t.Errorf("OCRAInput.Validate() error = %v, wantErr = %v", err, tt.wantErr)
 			}
 		})
 	}

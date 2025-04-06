@@ -2,7 +2,9 @@ package otp
 
 import (
 	"encoding/base32"
+	"encoding/hex"
 	"net/url"
+	"strings"
 	"testing"
 )
 
@@ -129,4 +131,81 @@ func TestParseOTPAuthURL(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestHexInputToOCRA(t *testing.T) {
+	validHex := hex.EncodeToString([]byte("test"))
+	tests := []struct {
+		name        string
+		counter     string
+		challenge   string
+		password    string
+		sessionInfo string
+		timestamp   string
+		wantErr     bool
+		errContains string
+	}{
+		{
+			name:        "all valid",
+			counter:     validHex,
+			challenge:   validHex,
+			password:    validHex,
+			sessionInfo: validHex,
+			timestamp:   validHex,
+			wantErr:     false,
+		},
+		{
+			name:        "invalid counter",
+			counter:     "zzzz",
+			wantErr:     true,
+			errContains: "counter",
+		},
+		{
+			name:        "invalid challenge",
+			challenge:   "bad!",
+			wantErr:     true,
+			errContains: "challenge",
+		},
+		{
+			name:        "invalid password",
+			password:    "123g", // invalid hex
+			wantErr:     true,
+			errContains: "password",
+		},
+		{
+			name:        "invalid sessionInfo",
+			sessionInfo: "nothex",
+			wantErr:     true,
+			errContains: "session info",
+		},
+		{
+			name:        "invalid timestamp",
+			timestamp:   "xxxx",
+			wantErr:     true,
+			errContains: "timestamp",
+		},
+		{
+			name:    "all empty",
+			wantErr: false,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			_, err := HexInputToOCRA(tc.counter, tc.challenge, tc.password, tc.sessionInfo, tc.timestamp)
+			if tc.wantErr {
+				if err == nil {
+					t.Errorf("expected error, got nil")
+				} else if tc.errContains != "" && !containsIgnoreCase(err.Error(), tc.errContains) {
+					t.Errorf("error = %q, expected to contain %q", err.Error(), tc.errContains)
+				}
+			} else if err != nil {
+				t.Errorf("expected no error, got: %v", err)
+			}
+		})
+	}
+}
+
+func containsIgnoreCase(s, substr string) bool {
+	return strings.Contains(strings.ToLower(s), strings.ToLower(substr))
 }

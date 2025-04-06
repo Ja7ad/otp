@@ -62,7 +62,6 @@ func FuzzDeriveRFC6287(f *testing.F) {
 			SessionInfo: session,
 			Timestamp:   timestamp,
 		})
-
 		if err != nil {
 			t.Skip()
 		}

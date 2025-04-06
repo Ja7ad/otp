@@ -1,0 +1,46 @@
+builds:
+  - id: otp
+    main: ./internal/app/cmd/main.go
+    dir: ./
+    binary: otp
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+
+archives:
+  - builds:
+      - otp
+    name_template: 'otp_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
+    format_overrides:
+      - goos: windows
+        format: zip
+    files:
+      - LICENSE
+
+nfpms:
+  - license: MIT License
+    maintainer: Javad Rajabzadeh <ja7ad@live.com>
+    homepage: https://github.com/Ja7ad/otp
+    bindir: /usr/local/bin
+    description: otp-api is a high-performance, minimalistic API server for generating and validating OTP codes (TOTP, HOTP, and OCRA) using the Ja7ad/otp Go library. It offers RESTful endpoints for secure authentication workflows, QR code URL generation, and dynamic OCRA suite handling.
+    formats:
+      - deb
+      - rpm
+
+checksum:
+  name_template: 'otp_checksums.txt'
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+      - Merge pull request
+      - Merge branch

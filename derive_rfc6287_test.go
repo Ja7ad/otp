@@ -78,7 +78,6 @@ var rfc6287Vectors = []rfc6287Vector{
 }
 
 func TestDeriveRFC6287_FullVectors(t *testing.T) {
-
 	for _, tv := range rfc6287Vectors {
 		tv := tv
 		t.Run(tv.Label, func(t *testing.T) {

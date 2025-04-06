@@ -7,7 +7,7 @@ func deriveRFC6287(secret []byte, s Suite, input OCRAInput) (string, error) {
 	}
 	cfg := s.Config()
 
-	if err := input.validate(cfg); err != nil {
+	if err := input.Validate(cfg); err != nil {
 		return "", err
 	}
 
