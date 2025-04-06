@@ -3,6 +3,7 @@ package otp
 import (
 	"crypto/rand"
 	"encoding/base32"
+	"encoding/hex"
 	"fmt"
 	"net/url"
 	"strconv"
@@ -166,8 +167,8 @@ type OCRAInput struct {
 	Timestamp []byte
 }
 
-// validate checks that the input matches the suite's requirements.
-func (in OCRAInput) validate(cfg SuiteConfig) error {
+// Validate checks that the input matches the suite's requirements.
+func (in OCRAInput) Validate(cfg SuiteConfig) error {
 	// Counter => 8 bytes if included
 	if cfg.IncludeCounter && len(in.Counter) != 8 {
 		return fmt.Errorf("expected 8-byte counter, got %d", len(in.Counter))
@@ -211,6 +212,42 @@ func (in OCRAInput) validate(cfg SuiteConfig) error {
 		return fmt.Errorf("expected 8-byte timestamp, got %d", len(in.Timestamp))
 	}
 	return nil
+}
+
+func HexInputToOCRA(counter, challenge, password, sessionInfo, timestamp string) (OCRAInput, error) {
+	input := OCRAInput{}
+
+	b, err := hex.DecodeString(counter)
+	if err != nil {
+		return OCRAInput{}, err
+	}
+	input.Counter = b
+
+	b, err = hex.DecodeString(challenge)
+	if err != nil {
+		return OCRAInput{}, err
+	}
+	input.Challenge = b
+
+	b, err = hex.DecodeString(password)
+	if err != nil {
+		return OCRAInput{}, err
+	}
+	input.Password = b
+
+	b, err = hex.DecodeString(sessionInfo)
+	if err != nil {
+		return OCRAInput{}, err
+	}
+	input.SessionInfo = b
+
+	b, err = hex.DecodeString(timestamp)
+	if err != nil {
+		return OCRAInput{}, err
+	}
+	input.Timestamp = b
+
+	return input, nil
 }
 
 // challengeLength returns the minimum expected length (in bytes) for the
