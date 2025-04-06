@@ -1,0 +1,557 @@
+definitions:
+  api.errResp:
+    properties:
+      code:
+        type: string
+      details:
+        additionalProperties: {}
+        type: object
+      message:
+        type: string
+    type: object
+  api.generateRandomSecretResp:
+    properties:
+      algorithm:
+        type: string
+      secret:
+        type: string
+    type: object
+  api.listOCRASuiteResp:
+    properties:
+      suites:
+        items:
+          type: string
+        type: array
+    type: object
+  api.ocraGenerateReq:
+    properties:
+      input:
+        $ref: '#/definitions/api.ocraInput'
+      raw_suite:
+        example: OCRA-1:HOTP-SHA1-6:QN08
+        type: string
+      secret:
+        type: string
+      suite:
+        $ref: '#/definitions/api.suiteConfig'
+    required:
+    - secret
+    type: object
+  api.ocraInput:
+    properties:
+      challenge_hex:
+        type: string
+      counter_hex:
+        type: string
+      password_hex:
+        type: string
+      session_info_hex:
+        type: string
+      timestamp_hex:
+        type: string
+    type: object
+  api.ocraValidateReq:
+    properties:
+      code:
+        example: "123456"
+        type: string
+      input:
+        $ref: '#/definitions/api.ocraInput'
+      raw_suite:
+        example: OCRA-1:HOTP-SHA1-6:QN08
+        type: string
+      secret:
+        type: string
+      suite:
+        $ref: '#/definitions/api.suiteConfig'
+    required:
+    - code
+    - secret
+    type: object
+  api.otpGenerateReq:
+    properties:
+      algorithm:
+        example: SHA1
+        type: string
+      counter:
+        example: 0
+        type: integer
+      digits:
+        example: "6"
+        type: string
+      period:
+        example: 30
+        type: integer
+      secret:
+        type: string
+      timestamp:
+        example: 1743879194
+        type: integer
+    required:
+    - secret
+    type: object
+  api.otpGenerateResp:
+    properties:
+      code:
+        type: string
+      counter:
+        type: integer
+      suite:
+        type: string
+      timestamp:
+        type: integer
+    type: object
+  api.otpURLGenerateReq:
+    properties:
+      account_name:
+        type: string
+      algorithm:
+        example: SHA1
+        type: string
+      digits:
+        example: "6"
+        type: string
+      issuer:
+        type: string
+      period:
+        example: 30
+        type: integer
+      secret:
+        type: string
+      type:
+        enum:
+        - totp
+        - hotp
+        type: string
+    required:
+    - account_name
+    - issuer
+    - secret
+    - type
+    type: object
+  api.otpURLGenerateResp:
+    properties:
+      url:
+        type: string
+    type: object
+  api.otpValidateReq:
+    properties:
+      algorithm:
+        example: SHA1
+        type: string
+      code:
+        description: TOTP code to validate
+        example: "123456"
+        type: string
+      counter:
+        example: 0
+        type: integer
+      digits:
+        example: "6"
+        type: string
+      period:
+        example: 30
+        type: integer
+      secret:
+        description: repeated for clarity
+        type: string
+      skew:
+        description: number of valid time steps in either direction
+        example: 10
+        type: integer
+      timestamp:
+        description: Unix timestamp to verify against
+        example: 1743879194
+        type: integer
+    required:
+    - code
+    - secret
+    type: object
+  api.otpValidateResp:
+    properties:
+      valid:
+        type: boolean
+    type: object
+  api.suiteConfig:
+    properties:
+      challenge_format:
+        enum:
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+        example: 1
+        type: integer
+      code_digits:
+        example: 6
+        type: integer
+      hash_function:
+        enum:
+        - SHA1
+        - SHA256
+        - SHA512
+        example: SHA1
+        type: string
+      include_challenge:
+        type: boolean
+      include_counter:
+        type: boolean
+      include_password:
+        type: boolean
+      include_session:
+        type: boolean
+      include_timestamp:
+        type: boolean
+      password_hash:
+        enum:
+        - 1
+        - 2
+        - 3
+        example: 1
+        type: integer
+      timestep:
+        example: 30
+        type: integer
+    type: object
+  api.suiteConfigReq:
+    properties:
+      raw_suite:
+        example: OCRA-1:HOTP-SHA1-6:QN08
+        type: string
+    required:
+    - raw_suite
+    type: object
+  api.suiteConfigResp:
+    properties:
+      config:
+        $ref: '#/definitions/api.suiteConfig'
+      raw:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /hotp/generate:
+    post:
+      consumes:
+      - application/json
+      description: Generates an HOTP token using the provided secret and counter.
+      parameters:
+      - description: HOTP generation payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.otpGenerateReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.otpGenerateResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.errResp'
+        "405":
+          description: Method Not Allowed
+          schema:
+            $ref: '#/definitions/api.errResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.errResp'
+      summary: Generate HOTP code
+      tags:
+      - hotp
+  /hotp/validate:
+    post:
+      consumes:
+      - application/json
+      description: Validates a given HOTP code against a secret and counter.
+      parameters:
+      - description: HOTP validation payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.otpValidateReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.otpValidateResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.errResp'
+        "405":
+          description: Method Not Allowed
+          schema:
+            $ref: '#/definitions/api.errResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.errResp'
+      summary: Validate HOTP code
+      tags:
+      - hotp
+  /ocra/generate:
+    post:
+      consumes:
+      - application/json
+      description: Generates an OCRA one-time password using a shared secret, suite,
+        and input values.
+      parameters:
+      - description: OCRA generation request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.ocraGenerateReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.otpGenerateResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.errResp'
+        "405":
+          description: Method Not Allowed
+          schema:
+            $ref: '#/definitions/api.errResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.errResp'
+      summary: Generate OCRA code
+      tags:
+      - ocra
+  /ocra/suite:
+    post:
+      consumes:
+      - application/json
+      description: Parses a raw OCRA suite string and returns its configuration details.
+      parameters:
+      - description: OCRA suite config request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.suiteConfigReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.suiteConfigResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.errResp'
+        "405":
+          description: Method Not Allowed
+          schema:
+            $ref: '#/definitions/api.errResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.errResp'
+      summary: Get OCRA suite configuration
+      tags:
+      - ocra
+  /ocra/suites:
+    get:
+      consumes:
+      - application/json
+      description: Returns a list of supported OCRA suite strings.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.listOCRASuiteResp'
+        "405":
+          description: Method Not Allowed
+          schema:
+            $ref: '#/definitions/api.errResp'
+      summary: List available OCRA suites
+      tags:
+      - ocra
+  /ocra/validate:
+    post:
+      consumes:
+      - application/json
+      description: Validates an OCRA response against a secret, suite, and input parameters.
+      parameters:
+      - description: OCRA validation request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.ocraValidateReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.otpValidateResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.errResp'
+        "405":
+          description: Method Not Allowed
+          schema:
+            $ref: '#/definitions/api.errResp'
+      summary: Validate OCRA code
+      tags:
+      - ocra
+  /otp/secret:
+    get:
+      consumes:
+      - application/json
+      description: Generates a base32-encoded secret for a given algorithm (default
+        is SHA1 if omitted).
+      parameters:
+      - description: Algorithm (SHA1, SHA256, SHA512)
+        in: query
+        name: algorithm
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.generateRandomSecretResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.errResp'
+        "405":
+          description: Method Not Allowed
+          schema:
+            $ref: '#/definitions/api.errResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.errResp'
+      summary: Generate random OTP secret
+      tags:
+      - otp
+  /otp/url:
+    post:
+      consumes:
+      - application/json
+      description: Returns a QR-compatible otpauth:// URL for TOTP or HOTP configuration.
+      parameters:
+      - description: OTP URL generation payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.otpURLGenerateReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.otpURLGenerateResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.errResp'
+        "405":
+          description: Method Not Allowed
+          schema:
+            $ref: '#/definitions/api.errResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.errResp'
+      summary: Generate OTP URL
+      tags:
+      - otp
+  /totp/generate:
+    post:
+      consumes:
+      - application/json
+      description: Generates a TOTP token using the given parameters.
+      parameters:
+      - description: TOTP generation payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.otpGenerateReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.otpGenerateResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.errResp'
+        "405":
+          description: Method Not Allowed
+          schema:
+            $ref: '#/definitions/api.errResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.errResp'
+      summary: Generate TOTP code
+      tags:
+      - totp
+  /totp/validate:
+    post:
+      consumes:
+      - application/json
+      description: Validates a TOTP token against the provided secret and timestamp.
+      parameters:
+      - description: TOTP validation payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.otpValidateReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.otpValidateResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.errResp'
+        "405":
+          description: Method Not Allowed
+          schema:
+            $ref: '#/definitions/api.errResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.errResp'
+      summary: Validate TOTP code
+      tags:
+      - totp
+swagger: "2.0"
