@@ -22,7 +22,7 @@ func GenerateOCRA(secret string, suite Suite, input OCRAInput) (string, error) {
 // OCRA suite, secret, and input parameters.
 //
 // The `secret` should be a base32-encoded key, which is decoded before validation.
-// The `code` is the OTP to Validate (usually entered by the user).
+// The `code` is the OTP to validate (usually entered by the user).
 // The `suite` and `input` define the expected context in which the OTP should have been generated.
 //
 // Returns true if the code is valid, false otherwise. An error is returned if decoding
