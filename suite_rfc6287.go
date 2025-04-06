@@ -39,25 +39,25 @@ type Suite interface {
 
 type SuiteConfig struct {
 	// Original suite string (useful for logging, debug, etc.)
-	Raw string
+	Raw string `json:"-"`
 
 	// OTP parameters
-	Hash   Algorithm // SHA1, SHA256, SHA512
-	Digits int       // OTP digits: 6, 7, 8
+	Hash   Algorithm `json:"hash"`   // SHA1, SHA256, SHA512
+	Digits int       `json:"digits"` // OTP digits: 6, 7, 8
 
 	// Challenge type
-	Challenge ChallengeFormat // QN08, QA10, etc.
+	Challenge ChallengeFormat `json:"challenge"` // QN08, QA10, etc.
 
 	// Input flags (used to determine which inputs are expected)
-	IncludeCounter   bool // C
-	IncludeChallenge bool // Q (always true if Challenge is set)
-	IncludePassword  bool // P
-	IncludeSession   bool // S
-	IncludeTimestamp bool // T
+	IncludeCounter   bool `json:"include_counter,omitempty"`   // C
+	IncludeChallenge bool `json:"include_challenge,omitempty"` // Q (always true if Challenge is set)
+	IncludePassword  bool `json:"include_password,omitempty"`  // P
+	IncludeSession   bool `json:"include_session,omitempty"`   // S
+	IncludeTimestamp bool `json:"include_timestamp,omitempty"` // T
 
 	// Extra metadata
-	PasswordHash PasswordHashAlgorithm // PSHA1, PSHA256, PSHA512 (optional)
-	TimeStep     int                   // T1, T2, etc. (in seconds; 0 = not used)
+	PasswordHash PasswordHashAlgorithm `json:"password_hash"`       // PSHA1, PSHA256, PSHA512 (optional)
+	TimeStep     int                   `json:"time_step,omitempty"` // T1, T2, etc. (in seconds; 0 = not used)
 }
 
 // NewSuite returns a validated Suite implementation from a given SuiteConfig.
