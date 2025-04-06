@@ -52,6 +52,8 @@ go get -u github.com/Ja7ad/otp
 
 Download the latest CLI/API binary for your platform from the [latest release page](https://github.com/Ja7ad/otp/releases/latest).
 
+> Online demo: https://otp-api.leapcell.app/docs
+
 ```shell
 $ otp -serve localhost:8080
 2025/04/06 10:41:48 INFO starting server address=:8080
