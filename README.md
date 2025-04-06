@@ -9,12 +9,15 @@ A high-performance, zero-dependency Go package for generating and validating TOT
 
 
 - [Feature](#-features)
-- [Installation](#installation-go-124-)
+- [Installation](#-installation-go--124)
+  - [Library](#-using-go)
+  - [OTP-API](#-prebuilt-binary)
+  - [Docker](#-docker-image)
 - [Comparison](#-comparison)
   - [Performance](#-performance-comparison)
   - [Features](#-feature-comparison)
 - [Proof algorithm](#-algorithm-rfc)
-- [Example](#example)
+- [Usage](#-usage)
 - [Contributing](#-contributing)
 - [Reference](#-references)
 
