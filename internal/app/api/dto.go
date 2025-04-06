@@ -197,7 +197,6 @@ type errResp struct {
 type homeResp struct {
 	App         string `json:"app"`
 	Description string `json:"description"`
-	Version     string `json:"version"`
 	Docs        string `json:"docs"`
 	Status      string `json:"status"`
 }

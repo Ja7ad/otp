@@ -12,11 +12,11 @@ import (
 var (
 	serve  *string
 	apiKey *string
+	ver    *bool
 )
 
 func init() {
 	serve = flag.String("serve", ":8080", "http listen address")
-	apiKey = flag.String("apikey", "", "api key for security http server")
 
 	flag.Parse()
 }

@@ -441,6 +441,7 @@ func generateRandomSecret() fasthttp.RequestHandler {
 // ------------ | ------ | ----------------------------------------------
 // challenge_format | int | 1=ChallengeNumeric08, 2=ChallengeNumeric10, 3=ChallengeAlpha08, 4=ChallengeAlpha10, 5=ChallengeHex08, 6=ChallengeHex10
 // password_hash    | int | 1=PasswordSHA1, 2=PasswordSHA256, 3=PasswordSHA512
+//
 //	@Tags			ocra
 //	@Accept			json
 //	@Produce		json
@@ -749,7 +750,6 @@ func home() fasthttp.RequestHandler {
 		resp := homeResp{
 			App:         _appName,
 			Description: _description,
-			Version:     version.Version.String(),
 			Docs:        docPath,
 			Status:      "ok",
 		}
