@@ -1,17 +1,18 @@
-package otp
+package otp_test
 
 import (
 	"fmt"
+	"github.com/Ja7ad/otp"
 	"time"
 )
 
 func ExampleGenerateTOTP() {
-	secret, err := RandomSecret(SHA1)
+	secret, err := otp.RandomSecret(otp.SHA1)
 	if err != nil {
 		panic(err)
 	}
 
-	code, err := GenerateTOTP(secret, time.Now(), DefaultTOTPParam)
+	code, err := otp.GenerateTOTP(secret, time.Now(), otp.DefaultTOTPParam)
 	if err != nil {
 		panic(err)
 	}
@@ -20,12 +21,12 @@ func ExampleGenerateTOTP() {
 }
 
 func ExampleGenerateHOTP() {
-	secret, err := RandomSecret(SHA1)
+	secret, err := otp.RandomSecret(otp.SHA1)
 	if err != nil {
 		panic(err)
 	}
 
-	code, err := GenerateHOTP(secret, 1, DefaultHOTPParam)
+	code, err := otp.GenerateHOTP(secret, 1, otp.DefaultHOTPParam)
 	if err != nil {
 		panic(err)
 	}
@@ -34,14 +35,14 @@ func ExampleGenerateHOTP() {
 }
 
 func ExampleGenerateOCRA() {
-	secret, err := RandomSecret(SHA1)
+	secret, err := otp.RandomSecret(otp.SHA1)
 	if err != nil {
 		panic(err)
 	}
 
-	suite := MustRawSuite("OCRA-1:HOTP-SHA1-6:QN08")
+	suite := otp.MustRawSuite("OCRA-1:HOTP-SHA1-6:QN08")
 
-	code, err := GenerateOCRA(secret, suite, OCRAInput{
+	code, err := otp.GenerateOCRA(secret, suite, otp.OCRAInput{
 		Challenge: []byte("12345678"),
 	})
 	if err != nil {
@@ -52,21 +53,21 @@ func ExampleGenerateOCRA() {
 }
 
 func ExampleValidateOCRA() {
-	secret, err := RandomSecret(SHA1)
+	secret, err := otp.RandomSecret(otp.SHA1)
 	if err != nil {
 		panic(err)
 	}
 
-	suite := MustRawSuite("OCRA-1:HOTP-SHA1-6:QN08")
+	suite := otp.MustRawSuite("OCRA-1:HOTP-SHA1-6:QN08")
 
-	code, err := GenerateOCRA(secret, suite, OCRAInput{
+	code, err := otp.GenerateOCRA(secret, suite, otp.OCRAInput{
 		Challenge: []byte("12345678"),
 	})
 	if err != nil {
 		panic(err)
 	}
 
-	ok, err := ValidateOCRA(code, secret, suite, OCRAInput{
+	ok, err := otp.ValidateOCRA(code, secret, suite, otp.OCRAInput{
 		Challenge: []byte("12345678"),
 	})
 	if err != nil {
@@ -77,21 +78,21 @@ func ExampleValidateOCRA() {
 }
 
 func ExampleValidateTOTP() {
-	secret, err := RandomSecret(SHA1)
+	secret, err := otp.RandomSecret(otp.SHA1)
 	if err != nil {
 		panic(err)
 	}
 
 	t := time.Now()
 
-	code, err := GenerateTOTP(secret, t, DefaultTOTPParam)
+	code, err := otp.GenerateTOTP(secret, t, otp.DefaultTOTPParam)
 	if err != nil {
 		panic(err)
 	}
 
 	fmt.Println(code)
 
-	ok, err := ValidateTOTP(secret, code, t, DefaultTOTPParam)
+	ok, err := otp.ValidateTOTP(secret, code, t, otp.DefaultTOTPParam)
 	if err != nil {
 		panic(err)
 	}
@@ -100,21 +101,21 @@ func ExampleValidateTOTP() {
 }
 
 func ExampleValidateHOTP() {
-	secret, err := RandomSecret(SHA1)
+	secret, err := otp.RandomSecret(otp.SHA1)
 	if err != nil {
 		panic(err)
 	}
 
 	counter := uint64(1)
 
-	code, err := GenerateHOTP(secret, counter, DefaultHOTPParam)
+	code, err := otp.GenerateHOTP(secret, counter, otp.DefaultHOTPParam)
 	if err != nil {
 		panic(err)
 	}
 
 	fmt.Println(code)
 
-	ok, err := ValidateHOTP(secret, code, counter, DefaultTOTPParam)
+	ok, err := otp.ValidateHOTP(secret, code, counter, otp.DefaultTOTPParam)
 	if err != nil {
 		panic(err)
 	}
@@ -123,18 +124,18 @@ func ExampleValidateHOTP() {
 }
 
 func ExampleGenerateTOTPURL() {
-	secret, err := RandomSecret(SHA1)
+	secret, err := otp.RandomSecret(otp.SHA1)
 	if err != nil {
 		panic(err)
 	}
 
-	url, err := GenerateTOTPURL(URLParam{
+	url, err := otp.GenerateTOTPURL(otp.URLParam{
 		Issuer:      "https://example.com",
 		Secret:      secret,
 		AccountName: "foobar",
-		Period:      DefaultTOTPParam.Period,
-		Digits:      DefaultTOTPParam.Digits,
-		Algorithm:   DefaultTOTPParam.Algorithm,
+		Period:      otp.DefaultTOTPParam.Period,
+		Digits:      otp.DefaultTOTPParam.Digits,
+		Algorithm:   otp.DefaultTOTPParam.Algorithm,
 	})
 	if err != nil {
 		panic(err)
@@ -144,18 +145,18 @@ func ExampleGenerateTOTPURL() {
 }
 
 func ExampleGenerateHOTPURL() {
-	secret, err := RandomSecret(SHA1)
+	secret, err := otp.RandomSecret(otp.SHA1)
 	if err != nil {
 		panic(err)
 	}
 
-	url, err := GenerateHOTPURL(URLParam{
+	url, err := otp.GenerateHOTPURL(otp.URLParam{
 		Issuer:      "https://example.com",
 		Secret:      secret,
 		AccountName: "foobar",
-		Period:      DefaultHOTPParam.Period,
-		Digits:      DefaultHOTPParam.Digits,
-		Algorithm:   DefaultHOTPParam.Algorithm,
+		Period:      otp.DefaultHOTPParam.Period,
+		Digits:      otp.DefaultHOTPParam.Digits,
+		Algorithm:   otp.DefaultHOTPParam.Algorithm,
 	})
 	if err != nil {
 		panic(err)
