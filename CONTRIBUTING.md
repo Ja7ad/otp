@@ -9,7 +9,7 @@ We value clean code, security, and performance. Whether you're fixing bugs, impl
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/Ja7ad/otp.git
+git clone https://github.com/ja7ad/otp.git
 cd otp
 ```
 
@@ -60,8 +60,8 @@ If you're implementing a new OTP-related RFC (e.g., OCRA, HOTP extensions):
 
 ## 🤝 Support & Feedback
 
-- Open a GitHub [Issue](https://github.com/Ja7ad/otp/issues)
-- Submit a [Pull Request](https://github.com/Ja7ad/otp/pulls)
+- Open a GitHub [Issue](https://github.com/ja7ad/otp/issues)
+- Submit a [Pull Request](https://github.com/ja7ad/otp/pulls)
 - Tag with `enhancement`, `bug`, or `security` as appropriate
 
 ---

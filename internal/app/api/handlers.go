@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Ja7ad/otp"
+	"github.com/ja7ad/otp"
 	"github.com/valyala/fasthttp"
 )
 

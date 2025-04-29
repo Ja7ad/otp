@@ -7,7 +7,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/Ja7ad/otp/internal/app/api"
+	"github.com/ja7ad/otp/internal/app/api"
 )
 
 var (

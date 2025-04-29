@@ -1,3 +1,3 @@
-module github.com/Ja7ad/otp
+module github.com/ja7ad/otp
 
 go 1.24

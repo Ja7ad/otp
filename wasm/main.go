@@ -8,7 +8,7 @@ import (
 	"syscall/js"
 	"time"
 
-	"github.com/Ja7ad/otp"
+	"github.com/ja7ad/otp"
 )
 
 // log prints a message to the JavaScript console for debugging.

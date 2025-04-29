@@ -26,7 +26,7 @@ archives:
 nfpms:
   - license: MIT License
     maintainer: Javad Rajabzadeh <ja7ad@live.com>
-    homepage: https://github.com/Ja7ad/otp
+    homepage: https://github.com/ja7ad/otp
     bindir: /usr/local/bin
     description: otp-api is a high-performance, minimalistic API server for generating and validating OTP codes (TOTP, HOTP, and OCRA) using the Ja7ad/otp Go library. It offers RESTful endpoints for secure authentication workflows, QR code URL generation, and dynamic OCRA suite handling.
     formats:

@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/Ja7ad/otp"
+	"github.com/ja7ad/otp"
 )
 
 func main() {

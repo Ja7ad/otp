@@ -1,9 +1,9 @@
-module github.com/Ja7ad/otp/internal/app
+module github.com/ja7ad/otp/internal/app
 
 go 1.24
 
 require (
-	github.com/Ja7ad/otp v1.2.2
+	github.com/ja7ad/otp v1.2.2
 	github.com/swaggo/swag v1.16.4
 	github.com/valyala/fasthttp v1.60.0
 )

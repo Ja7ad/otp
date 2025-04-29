@@ -1,7 +1,7 @@
 ![otp](.github/otp.svg)
 [![codecov](https://codecov.io/gh/Ja7ad/otp/branch/main/graph/badge.svg?token=8N6N60D5UI)](https://codecov.io/gh/Ja7ad/otp)
-[![Go Report Card](https://goreportcard.com/badge/github.com/Ja7ad/otp)](https://goreportcard.com/report/github.com/Ja7ad/otp)
-[![Go Reference](https://pkg.go.dev/badge/github.com/Ja7ad/otp.svg)](https://pkg.go.dev/github.com/Ja7ad/otp)
+[![Go Report Card](https://goreportcard.com/badge/github.com/ja7ad/otp)](https://goreportcard.com/report/github.com/ja7ad/otp)
+[![Go Reference](https://pkg.go.dev/badge/github.com/ja7ad/otp.svg)](https://pkg.go.dev/github.com/ja7ad/otp)
 
 # 🔐 OTP
 
@@ -44,7 +44,7 @@ Here’s your updated `README.md` **Installation** section with release and Dock
 ### 🛠️ Using Go
 
 ```bash
-go get -u github.com/Ja7ad/otp
+go get -u github.com/ja7ad/otp
 ```
 
 > Node.js bindings are available [here](./otp-js).
@@ -53,7 +53,7 @@ go get -u github.com/Ja7ad/otp
 
 ### 🚀 Prebuilt Binary
 
-Download the latest CLI/API binary for your platform from the [latest release page](https://github.com/Ja7ad/otp/releases/latest).
+Download the latest CLI/API binary for your platform from the [latest release page](https://github.com/ja7ad/otp/releases/latest).
 
 > Online demo: https://otp-api.leapcell.app/docs
 
@@ -149,7 +149,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/Ja7ad/otp"
+	"github.com/ja7ad/otp"
 	"log"
 	"time"
 )
@@ -203,7 +203,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/Ja7ad/otp"
+	"github.com/ja7ad/otp"
 	"log"
 )
 
@@ -256,7 +256,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/Ja7ad/otp"
+	"github.com/ja7ad/otp"
 )
 
 func main() {

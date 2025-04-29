@@ -2,7 +2,7 @@ package otp_test
 
 import (
 	"fmt"
-	"github.com/Ja7ad/otp"
+	"github.com/ja7ad/otp"
 	"time"
 )
 

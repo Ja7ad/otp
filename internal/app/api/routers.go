@@ -3,7 +3,7 @@ package api
 import (
 	"strings"
 
-	_ "github.com/Ja7ad/otp/internal/app/docs"
+	_ "github.com/ja7ad/otp/internal/app/docs"
 	fastHttpSwagger "github.com/swaggo/fasthttp-swagger"
 	"github.com/valyala/fasthttp"
 )
