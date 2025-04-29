@@ -3,7 +3,6 @@ module github.com/ja7ad/otp/internal/app
 go 1.24
 
 require (
-	github.com/ja7ad/otp v1.2.2
 	github.com/swaggo/swag v1.16.4
 	github.com/valyala/fasthttp v1.60.0
 )
@@ -17,6 +16,7 @@ require (
 	github.com/go-openapi/jsonreference v0.21.0 // indirect
 	github.com/go-openapi/spec v0.21.0 // indirect
 	github.com/go-openapi/swag v0.23.1 // indirect
+	github.com/ja7ad/otp v1.3.3 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/klauspost/compress v1.18.0 // indirect
 	github.com/mailru/easyjson v0.9.0 // indirect
